@@ -1,14 +1,15 @@
-// Import Node url module
 const url = require('url')
+const qs = require('querystring')
 const http = require('http')
 
 const serverHandle = function (req, res) {
-  // Retrieve and print the current path
-  const path = url.parse(req.url).pathname
-  console.log(path)
+  // Retrieve and print the queryParams
+  const queryParams = qs.parse(url.parse(req.url).query)
+  console.log(queryParams)
+  const content = JSON.stringify(queryParams)
 
   res.writeHead(200, {'Content-Type': 'text/html'})
-  res.write(path)
+  res.write(content)
   res.end()
 }
 
