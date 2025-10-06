@@ -2,7 +2,9 @@
 
 ## Introduction
 This repository is part of the Web Technologies course at ECE.  
-It serves as a foundation for building the final project, with each lab adding incremental features to the application.
+It serves as a foundation for building the final project, with each lab adding incremental features to the application.  
+
+Lab 4 focuses on initializing a Next.js application, building a skeleton for a website.
 
 ## Prerequisites
 - Node.js installed
@@ -11,16 +13,17 @@ It serves as a foundation for building the final project, with each lab adding i
 - A GitHub account for pushing commits and managing branches
 
 ## Installation
+
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/Octaveeee/webtech-108.git
 ```
 
-2. Navigate to the project folder:
+2. Navigate to the Next.js application folder:
 
 ```bash
-cd lab2-node
+cd client
 ```
 
 3. Install dependencies:
@@ -31,31 +34,43 @@ npm install
 
 ## Usage
 
-### Start the server
-```bash
-npm start
-```
-
-### Start in development mode with auto-reload (Nodemon)
+### Start the development server
 ```bash
 npm run dev
 ```
 
 ### Access the application in your browser
-- Home page: [http://localhost:8080/](http://localhost:8080/)  
-- Hello route: [http://localhost:8080/hello?name=YourName](http://localhost:8080/hello?name=YourName)  
-- About route (JSON): [http://localhost:8080/about](http://localhost:8080/about)  
+- Home page: [http://localhost:3000/](http://localhost:3000/)  
+- About page: [http://localhost:3000/about](http://localhost:3000/about)  
+- Contacts page: [http://localhost:3000/contacts](http://localhost:3000/contacts)  
+- Articles list: [http://localhost:3000/articles](http://localhost:3000/articles)  
+- Dynamic article page example: [http://localhost:3000/articles/1](http://localhost:3000/articles/1)  
+
+> Note: Replace `1` with any article ID you create for testing.
 
 ## Project structure
 ```
-lab2-node/
-│-- content/
-│   │-- about.json
-│-- handles.js
-│-- index.js
+client/
+│-- components/
+│   │-- Header.js
+│   │-- Footer.js
+│-- pages/
+│   │-- index.js
+│   │-- about.js
+│   │-- contacts.js
+│   │-- articles/
+│       │-- [id].js
+│       │-- index.js
 │-- package.json
 │-- README.md
 ```
+
+## Lab 4 Features
+- Next.js application initialization (`client` folder)
+- React components for header, footer, and navigation
+- Pages: Home, About, Contacts, Articles
+- Dynamic routing for individual articles using `[id].js`
+
 
 ## Contributors
 - Octave SAVEAUX (#webtech-108)
