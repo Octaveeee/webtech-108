@@ -16,17 +16,17 @@ import GalleryRoom from './GalleryRoom'
 const GalleryScene = () => {
   return (
     <Canvas shadows>
-      {/* Lumière */}
+      {/* LIGHTS */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
 
-      {/* Salle de galerie */}
+      {/* 3D Room */}
       <GalleryRoom />
 
-      {/* Joueur / caméra */}
+      {/* Player + CAMERA */}
       <Player />
 
-      {/* Contrôles souris */}
+      {/* Controls */}
       <PointerLockControls />
     </Canvas>
   )

@@ -69,7 +69,7 @@ const MovementControls = ({ playerRef }) => {
       playerRef.current.position.add(movement)
     }
 
-    // Gravité + saut
+    
     verticalVelocity.current -= GRAVITY * delta
     playerRef.current.position.y += verticalVelocity.current * delta
     
