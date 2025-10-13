@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import Footer from './components/footer'
-import Navbar from './components/navbar'
+import Navbar from '@/components/navbar'
+import Footer from '@/components/footer'
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
           Bienvenue dans site de mini jeu. <span className="text-blue-600">Explorez</span> nos mini jeux en 3D.
         </p>
         <Link 
-          href="/components/scenes3d" 
+          href="/scenes3d" 
           className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Play - Lancer la scène 3D

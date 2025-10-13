@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import GalleryScene from './GalleryScene'
+import GalleryScene from '@/components/scenes3d/GalleryScene'
 
 export default function Scene3DPage() {
   return (
