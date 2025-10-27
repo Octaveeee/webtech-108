@@ -13,12 +13,7 @@ export default function Home() {
         <p className="mt-2 text-gray-600">
           Bienvenue dans site de mini jeu. <span className="text-blue-600">Explorez</span> nos mini jeux en 3D.
         </p>
-        <Link 
-          href="/scenes3d" 
-          className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          Play - Lancer la scène 3D
-        </Link>
+        
         
         <h1>1</h1>
         <h1>1</h1>

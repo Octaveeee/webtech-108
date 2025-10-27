@@ -50,12 +50,12 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
+                        <Link href="/artists" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
                         Artists
                         </Link>
                     </li>
                     <li>
-                        <Link href="/" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
+                        <Link href="/galleries" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
                         Galleries
                         </Link>
                     </li>

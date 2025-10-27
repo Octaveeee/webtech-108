@@ -23,7 +23,7 @@ export default function Scene3DPage() {
           color: "black"
         }}
       >
-        ← Retour à l'accueil
+        ← Home
       </Link>
     </div>
   )
