@@ -9,7 +9,7 @@ const Player = () => {
   return (
     <>
       <mesh ref={playerRef}>
-        <boxGeometry args={[1, 2, 1]} />
+        <boxGeometry args={[0.5, 1, 0.5]} />
         <meshStandardMaterial color="orange" />
       </mesh>
       <MovementControls playerRef={playerRef} />
