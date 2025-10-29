@@ -1,99 +1,98 @@
-# WebTech Project - Ongoing Labs
+# Art Gallery — Next.js
 
 ## Introduction
-This repository is part of the **Web Technologies** course at **ECE Paris**.  
-It serves as a working base for all the labs completed throughout the semester.  
-Each lab progressively builds new functionalities toward the final web project.
+This project is part of the Web Technologies course at ECE Paris. It is a modern
+Next.js application showcasing a responsive navigation, a styled footer, and an
+experimental 3D scene area for a virtual gallery experience.
 
-**Lab 4** focuses on setting up a **Next.js** application, creating the main structure of the website and defining its first components and pages.
+## Tech Stack
+- Next.js 14 (App Router)
+- React
+- Tailwind CSS
+- Three.js / React Three Fiber (3D scenes)
+- Node.js, npm
 
-## Technologies Used
-- **Next.js**
-- **React.js**
-- **Node.js**
-- **npm**
+## Getting Started
 
-## Prerequisites
-Before starting, make sure you have the following installed on your system:
-- [Node.js](https://nodejs.org/)
-- npm (included with Node.js)
-- Git for version control
-- A GitHub account to manage commits and branches
+1) Clone the repository
+```bash
+git clone https://github.com/Octaveeee/webtech-108.git
+cd art_gallery-nextjs
+```
 
-## Installation
+2) Install dependencies
+```bash
+npm install
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Octaveeee/webtech-108.git
-   ```
-
-2. Navigate to the Next.js application folder:
-   ```bash
-   cd client
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-## Usage
-
-Start the development server:
+3) Run the development server
 ```bash
 npm run dev
 ```
 
-Then open your browser and access:
-- Home: [http://localhost:3000/](http://localhost:3000/)
-- About: [http://localhost:3000/about](http://localhost:3000/about)
-- Contacts: [http://localhost:3000/contacts](http://localhost:3000/contacts)
-- Articles list: [http://localhost:3000/articles](http://localhost:3000/articles)
-- Example article page: [http://localhost:3000/articles/1](http://localhost:3000/articles/1)
+Open http://localhost:3000 in your browser.
 
-> Replace `1` with any valid article ID for testing.
+## Live Demo
+- Vercel: [webtech-108.vercel.app](https://webtech-108.vercel.app/)
+
+## Available Routes
+- `/` — Home
+- `/about` — About
+- `/contacts` — Contacts
+- `/artists` — Artists listing (static page)
+- `/galleries` — Galleries listing (static page)
+- `/scenes3d` — Experimental 3D scene
 
 ## Project Structure
 ```
-content/
 public/
+│-- assets/
+│   │-- logo1.png
+│   │-- logo2.png
+
 src/
 │-- app/
 │   │-- about/
 │   │   │-- page.js
-│   │-- articles/
-│   │   │-- [id]/
-│   │   │   │-- page.js
-│   │   │-- page.js
-│   │-- components/
-│   │   │-- footer.js
-│   │   │-- header.js
-│   │   │-- navbar.js
 │   │-- contacts/
 │   │   │-- page.js
-│   │-- global.css
+│   │-- scenes3d/
+│   │   │-- page.js
 │   │-- layout.js
-│   │-- page.js
-│-- README.md
-│-- .gitignore
-│-- package.json
-│-- etc/
+│   │-- globals.css
+│   │-- page.js              # Home
+│-- components/
+│   │-- navbar.js
+│   │-- footer.js
+│   │-- scenes3d/
+│   │   │-- GalleryRoom.jsx
+│   │   │-- GalleryScene.js
+│   │   │-- MovementControls.jsx
+│   │   │-- Player.jsx
+
+tailwind.config.js
+package.json
+README.md
 ```
 
-## Lab 4 Overview
-- Initialization of a **Next.js** project (`client` folder)
-- Creation of shared components: header, footer, and navigation
-- Implementation of basic pages: Home, About, Contacts, and Articles
-- Dynamic routing setup for individual article pages
+## Notable Features
+- Responsive navbar with mobile menu and animated icon
+- Fullscreen overlay navigation
+- Styled footer with concise project note and external links
+- 3D scene components (WIP) in `src/components/scenes3d`
 
-## Progress
-- ✅ Lab 4 completed  
-- 🔄 Project development ongoing (further labs to be integrated)
+## Scripts
+```bash
+npm run dev       # Start dev server
+npm run build     # Build for production
+npm run start     # Start production server
+```
+
 
 ## Contributors
-- **Octave SAVEAUX** (#webtech-108)
-- **Martin BRULEY** (#webtech-108)
+- Octave SAVEAUX (#webtech-108)
+- Martin BRULEY (#webtech-108)
 
 ## Contact
-- Octave SAVEAUX — [octave.saveaux@edu.ece.fr]
-- Martin BRULEY — [martin.bruley@edu.ece.fr]
+- Octave SAVEAUX — octave.saveaux@edu.ece.fr
+- Martin BRULEY — martin.bruley@edu.ece.fr
