@@ -9,9 +9,9 @@ export default function Home() {
 
       {/* Contenu principal */}
       <main className="container py-8 pt-22">
-        <h1 className="text-3xl font-bold text-gray-900">Accueil</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Home</h1>
         <p className="mt-2 text-gray-600">
-          Bienvenue dans site de mini jeu. <span className="text-blue-600">Explorez</span> nos mini jeux en 3D.
+          Welcome to our online <span className="text-blue-600">Art Gallery</span>. Discover curated collections and immersive 3D exhibitions.
         </p>
         
         
