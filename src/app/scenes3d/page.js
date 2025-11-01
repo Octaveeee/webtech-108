@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import GalleryScene from '@/components/scenes3d/GalleryScene'
+import HelpPanel from '@/components/scenes3d/HelpPanel'
 
 export default function Scene3DPage() {
   return (
@@ -25,6 +26,9 @@ export default function Scene3DPage() {
       >
         ← Home
       </Link>
+
+      <HelpPanel/>
+      
     </div>
   )
 }
