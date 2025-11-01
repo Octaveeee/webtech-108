@@ -29,8 +29,8 @@ export default function HelpPanel() {
                   <kbd className="px-2 py-1 bg-gray-800 rounded text-xs font-mono">Space</kbd>
                   <span className="text-gray-300">Jump</span>
                 </div>
-                <div className="flex items-center gap-2 mt-3">
-                  <span className="text-gray-400 text-xs">Mouse</span>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-1 bg-gray-800 rounded text-xs font-mono">Mouse</span>
                   <span className="text-gray-300">Look around</span>
                 </div>
               </div>

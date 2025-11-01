@@ -4,9 +4,9 @@ import Footer from '@/components/footer'
 
 export default function Galleries() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="container py-8 pt-22">
+      <main className="container py-8 pt-22 flex-1">
         <h1 className="text-2xl font-bold">Galleries</h1>
         <p>All the 3D galleries here.</p>
         <h1>The first one here :</h1>
