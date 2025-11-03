@@ -1,14 +1,22 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import MovementControls from './MovementControls'
+
+const SPAWN_POSITION = [5, 1, 5]
 
 const Player = () => {
   const playerRef = useRef()
 
+  useEffect(() => {
+    if (playerRef.current) {
+      playerRef.current.position.set(...SPAWN_POSITION)
+    }
+  }, [])
+
   return (
     <>
-      <mesh ref={playerRef}>
+      <mesh ref={playerRef} position={SPAWN_POSITION}>
         <boxGeometry args={[0.5, 1, 0.5]} />
         <meshStandardMaterial color="orange" />
       </mesh>

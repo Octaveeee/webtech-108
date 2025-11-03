@@ -11,81 +11,77 @@
 import { useTexture } from '@react-three/drei'
 import { RepeatWrapping } from 'three'
 
-const WALL_COLOR = "#cccccc"
-const FLOOR_COLOR = "#cccccc"
+const createTexture = (baseTexture, repeatX, repeatY) => {
+  const texture = baseTexture.clone()
+  texture.repeat.set(repeatX, repeatY)
+  texture.wrapS = RepeatWrapping
+  texture.wrapT = RepeatWrapping
+  return texture
+}
 
 const GalleryRoom = () => {
-  const floorTexture = useTexture('/textures/floor.jpg')
+  const baseFloorTexture = useTexture('/textures/floor5.jpg')
+  const baseWallTexture = useTexture('/textures/wall.jpg')
+  const baseRoofTexture = useTexture('/textures/roof.jpg')
 
-  floorTexture.repeat.set(2, 2)
-  floorTexture.wrapS = RepeatWrapping
-  floorTexture.wrapT = RepeatWrapping  
+  const floorTexture1 = createTexture(baseFloorTexture, 3, 3)
+  const floorTexture2 = createTexture(baseFloorTexture, 6, 6)
+  const wallTexture = createTexture(baseWallTexture, 2, 2)
+  const roofTexture1 = createTexture(baseRoofTexture, 1, 1)
+  const roofTexture2 = createTexture(baseRoofTexture, 2, 2)
 
+
+  const floors = [
+    { position: [5, 0, 5], size: 10, texture: floorTexture1 },
+    { position: [10, 0, 20], size: 20, texture: floorTexture2 },
+  ]
+
+  const roofs = [
+    { position: [5, 5.5, 5], size: 10, texture: roofTexture1 },
+    { position: [10, 5.5, 20], size: 20, texture: roofTexture2 },
+  ]
+
+  const walls = [
+    { position: [5, 2, 0], rotation: [0, 0, 0] },
+    { position: [10, 2, 5], rotation: [0, Math.PI / 2, 0] },
+    { position: [15, 2, 10], rotation: [0, 0, 0] },
+    { position: [20, 2, 15], rotation: [0, Math.PI / 2, 0] },
+    { position: [20, 2, 25], rotation: [0, Math.PI / 2, 0] },
+    { position: [15, 2, 30], rotation: [0, 0, 0] },
+    { position: [5, 2, 30], rotation: [0, 0, 0] },
+    { position: [0, 2, 25], rotation: [0, Math.PI / 2, 0] },
+    { position: [0, 2, 15], rotation: [0, Math.PI / 2, 0] },
+    { position: [0, 2, 5], rotation: [0, Math.PI / 2, 0] },
+  ]
 
   return (
     <>
       {/* FLOOR */}
-      <mesh position={[5, 0, 5]} rotation={[-Math.PI / 2, 0, 0]} >
-        <planeGeometry args={[10, 10]} />
-        <meshStandardMaterial map={floorTexture} />
-      </mesh>
+      {floors.map((floor, index) => (
+        <mesh key={index} position={floor.position} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[floor.size, floor.size]} />
+          <meshStandardMaterial map={floor.texture} />
+        </mesh>
+      ))}
 
-      <mesh position={[10, 0, 20]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial map={floorTexture} />
-      </mesh>
+      {/* ROOF */}
+      {roofs.map((roof, index) => (
+        <mesh key={index} position={roof.position} rotation={[Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[roof.size, roof.size]} />
+          <meshStandardMaterial map={roof.texture} />
+        </mesh>
+      ))}
+
+
 
       {/* WALLS */}
-      <mesh position={[5, 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
+      {walls.map((wall, index) => (
+        <mesh key={index} position={wall.position} rotation={wall.rotation}>
+          <boxGeometry args={[10, 7, 0.1]} />
+          <meshStandardMaterial map={wallTexture} />
+        </mesh>
+      ))}
 
-      <mesh position={[10, 2, 5]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[15, 2, 10]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[20, 2, 15]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[20, 2, 25]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[15, 2, 30]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[5, 2, 30]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[0, 2, 25]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[0, 2, 15]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-
-      <mesh position={[0, 2, 5]} rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[10, 4, 0.1]} />
-        <meshStandardMaterial color={WALL_COLOR} />
-      </mesh>
-      
       
       
       
@@ -95,3 +91,14 @@ const GalleryRoom = () => {
 }
 
 export default GalleryRoom
+
+
+/*
+
+      
+<mesh position={[5, 0.05, 0]}>
+<boxGeometry args={[10, 0.1, 0.05]} />
+<meshStandardMaterial map={PLINTH_TEXTURE.jpg')} />
+</mesh>
+
+*/
