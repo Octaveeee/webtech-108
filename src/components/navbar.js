@@ -22,13 +22,22 @@ export default function Navbar() {
                         />
                     </Link>
 
+                    {/* Login */}
+                    <div className="flex items-center gap-3">
+                        <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">
+                            Login
+                        </button>
+                        <button className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                            Register
+                        </button>
+                    </div>
+
                     {/* Bouton menu*/}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
                         className="relative w-8 h-6 flex flex-col justify-between items-center group focus:outline-none"
                         aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
                     >
-                        {/* basics css + transformation : if isOpen = true, so rotate-45..., however nothing */}
                         <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2.5' : ''}`}></span>
                         <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
                         <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
