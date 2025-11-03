@@ -20,7 +20,7 @@ const createTexture = (baseTexture, repeatX, repeatY) => {
 }
 
 const GalleryRoom = () => {
-  const baseFloorTexture = useTexture('/textures/floor5.jpg')
+  const baseFloorTexture = useTexture('/textures/floor.jpg')
   const baseWallTexture = useTexture('/textures/wall.jpg')
   const baseRoofTexture = useTexture('/textures/roof.jpg')
 
