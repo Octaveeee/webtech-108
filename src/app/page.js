@@ -76,11 +76,6 @@ export default function Home() {
 
       <Footer />
 
-      <link rel="preload" as="image" href="/textures/floor.jpg" />
-      <link rel="preload" as="image" href="/textures/wall.jpg" />
-      <link rel="preload" as="image" href="/textures/roof.jpg" />
-      <link rel="preload" as="image" href="/textures/plinth.jpg" />
-
     </div>
 
 

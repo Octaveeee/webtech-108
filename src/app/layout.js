@@ -19,6 +19,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        
+        <link rel="preload" as="image" href="/textures/floor.jpg" />
+        <link rel="preload" as="image" href="/textures/wall.jpg" />
+        <link rel="preload" as="image" href="/textures/roof.jpg" />
+        <link rel="preload" as="image" href="/textures/plinth.jpg" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
