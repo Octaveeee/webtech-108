@@ -8,14 +8,31 @@
 
 'use client'
 
+import { useEffect } from 'react'
+import { useProgress } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { PointerLockControls } from '@react-three/drei'
 import Player from './Player'
 import GalleryRoom from './GalleryRoom'
 
-const GalleryScene = () => {
+function LoadingDetector({ onLoaded }) {
+  const { progress } = useProgress()
+  
+  useEffect(() => {
+    if (progress === 100 && onLoaded) {
+      setTimeout(() => onLoaded(), 300)
+    }
+  }, [progress, onLoaded])
+  
+  return null
+}
+
+const GalleryScene = ({ onLoaded }) => {
   return (
     <Canvas shadows>
+
+      <LoadingDetector onLoaded={onLoaded} />
+
       {/* LIGHTS */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 5]} intensity={1} castShadow />

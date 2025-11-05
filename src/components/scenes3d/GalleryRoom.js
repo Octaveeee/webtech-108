@@ -23,12 +23,14 @@ const GalleryRoom = () => {
   const baseFloorTexture = useTexture('/textures/floor.jpg')
   const baseWallTexture = useTexture('/textures/wall.jpg')
   const baseRoofTexture = useTexture('/textures/roof.jpg')
+  const basePlinthTexture = useTexture('/textures/plinth.jpg')
 
   const floorTexture1 = createTexture(baseFloorTexture, 3, 3)
   const floorTexture2 = createTexture(baseFloorTexture, 6, 6)
   const wallTexture = createTexture(baseWallTexture, 2, 2)
   const roofTexture1 = createTexture(baseRoofTexture, 1, 1)
   const roofTexture2 = createTexture(baseRoofTexture, 2, 2)
+  const plinthTexture = createTexture(basePlinthTexture, 1, 1)
 
 
   const floors = [
@@ -52,6 +54,15 @@ const GalleryRoom = () => {
     { position: [0, 2, 25], rotation: [0, Math.PI / 2, 0] },
     { position: [0, 2, 15], rotation: [0, Math.PI / 2, 0] },
     { position: [0, 2, 5], rotation: [0, Math.PI / 2, 0] },
+  ]
+
+  const plinth = [
+    { position: [5, 0.05, 0], size: 10, texture: plinthTexture, rotation: [0, 0, 0] },
+    { position: [10, 0.05, 30], size: 20, texture: plinthTexture, rotation: [0, 0, 0] },
+    { position: [20, 0.05, 20], size: 20, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
+    { position: [0, 0.05, 15], size: 30, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
+    { position: [10, 0.05, 5], size: 10, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
+    { position: [15, 0.05, 10], size: 10.3, texture: plinthTexture, rotation: [0, 0, 0] },
   ]
 
   return (
@@ -83,6 +94,16 @@ const GalleryRoom = () => {
       ))}
 
       
+      {/* PLINTH */}
+      {plinth.map((plinth, index) => (
+        <mesh key={index} position={plinth.position} rotation={plinth.rotation}>
+          <boxGeometry args={[plinth.size, 0.5, 0.3]} />
+          <meshStandardMaterial map={plinth.texture} />
+        </mesh>
+      ))}
+
+
+
       
       
       
@@ -91,14 +112,3 @@ const GalleryRoom = () => {
 }
 
 export default GalleryRoom
-
-
-/*
-
-      
-<mesh position={[5, 0.05, 0]}>
-<boxGeometry args={[10, 0.1, 0.05]} />
-<meshStandardMaterial map={PLINTH_TEXTURE.jpg')} />
-</mesh>
-
-*/
