@@ -3,11 +3,13 @@
 import { useRef, useEffect } from 'react'
 import { PointerLockControls } from '@react-three/drei'
 import { useThree, useFrame } from '@react-three/fiber'
+import { createCollisionBoxes, checkCollision } from './Collision'
 import * as THREE from 'three'
 
 const MovementControls = ({ playerRef }) => {
   const controlsRef = useRef()
   const { camera } = useThree()
+  const collisionBoxes = useRef(createCollisionBoxes())
   
   const keys = useRef({ forward: false, backward: false, left: false, right: false, jump: false })
   const verticalVelocity = useRef(0)
@@ -66,7 +68,18 @@ const MovementControls = ({ playerRef }) => {
 
     if (movement.lengthSq() > 0) {
       movement.normalize().multiplyScalar(speed)
-      playerRef.current.position.add(movement)
+      const newPosition = playerRef.current.position.clone().add(movement)
+      
+      // check collision
+      const hasCollision = checkCollision(
+        [newPosition.x, newPosition.y, newPosition.z],
+        collisionBoxes.current
+      )
+      
+      // apply movement if no collision
+      if (!hasCollision) {
+        playerRef.current.position.copy(newPosition)
+      }
     }
 
     
