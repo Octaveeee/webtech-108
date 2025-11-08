@@ -65,6 +65,10 @@ const GalleryRoom = () => {
     { position: [15, 0.05, 10], size: 10.3, texture: plinthTexture, rotation: [0, 0, 0] },
   ]
 
+  const backboard = [
+    { position: [5, 2.7, 0.05], size: 5, rotation: [0, 0, 0] },
+  ]
+
   return (
     <>
       {/* FLOOR */}
@@ -99,6 +103,15 @@ const GalleryRoom = () => {
         <mesh key={index} position={plinth.position} rotation={plinth.rotation}>
           <boxGeometry args={[plinth.size, 0.5, 0.3]} />
           <meshStandardMaterial map={plinth.texture} />
+        </mesh>
+      ))}
+
+
+      {/* BACKBOARD */}
+      {backboard.map((backboard, index) => (
+        <mesh key={index} position={backboard.position} rotation={backboard.rotation}>
+          <boxGeometry args={[backboard.size, 3, 0.1]} />
+          <meshStandardMaterial color="midnightblue" />
         </mesh>
       ))}
 
