@@ -68,21 +68,37 @@ export default function Galleries() {
                   key={gallery.id_galleries}
                   className="w-full bg-white dark:bg-[#24252a] rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all cursor-pointer"
                 >
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                    {gallery.name}
-                  </h2>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                      {gallery.name}
+                    </h2>
+                    {gallery.finished === false && (
+                      <span className="text-sm text-orange-500 dark:text-orange-400 font-medium">
+                        (in development)
+                      </span>
+                    )}
+                  </div>
                   {gallery.description && (
                     <p className="text-gray-600 dark:text-gray-300 break-words mb-4">
                       {gallery.description}
                     </p>
                   )}
 
-                  <Link 
-                    href={`/galleries/${encodeURIComponent(gallery.name)}/scene`}
-                    className="mt-4 inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-2 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition"
-                  >
-                    Visit 3D Gallery
-                  </Link>
+                  {gallery.finished === true ? (
+                    <Link 
+                      href={`/galleries/${encodeURIComponent(gallery.name)}/scene`}
+                      className="mt-4 inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-2 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition"
+                    >
+                      Visit 3D Gallery
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className="mt-4 inline-block rounded-lg bg-gray-400 dark:bg-gray-600 px-6 py-2 text-white cursor-not-allowed opacity-50"
+                    >
+                      Visit 3D Gallery
+                    </button>
+                  )}
 
                   {gallery.created_at && gallery.id_user && (
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
