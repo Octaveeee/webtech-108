@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import GalleryScene from '@/components/scenes3d/GalleryScene'
 import HelpPanel from '@/components/scenes3d/HelpPanel'
+import { supabase } from '@/lib/supabaseClient'
 
 function TexturePreloader() {
   useEffect(() => {
@@ -36,19 +37,12 @@ function TexturePreloader() {
 
 function SceneLoader() {
   return (
-    <div style={{
-      width: "100vw",
-      height: "100vh",
-      backgroundColor: "#1a1b1f",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+    <div className="w-screen h-screen bg-[#1a1b1f] flex items-center justify-center">
       <div className="text-white text-3xl font-light">
         Loading
         <span className="animate-pulse">.</span>
-        <span className="animate-pulse" style={{ animationDelay: '0.2s' }}>.</span>
-        <span className="animate-pulse" style={{ animationDelay: '0.4s' }}>.</span>
+        <span className="animate-pulse [animation-delay:0.2s]">.</span>
+        <span className="animate-pulse [animation-delay:0.4s]">.</span>
       </div>
     </div>
   )
@@ -58,53 +52,71 @@ export default function GalleryScenePage() {
   const params = useParams()
   const galleryName = decodeURIComponent(params.name)
   const [isLoading, setIsLoading] = useState(true)
+  const [sceneConfig, setSceneConfig] = useState(null)
+  const [error, setError] = useState(null)
+  const [configLoading, setConfigLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchSceneConfig() {
+      try {
+        setConfigLoading(true)
+        const { data, error } = await supabase
+          .from('galleries')
+          .select('scene_config')
+          .eq('name', galleryName)
+          .single()
+
+        if (error) throw error
+        
+        if (!data?.scene_config) {
+          throw new Error('No scene configuration found for this gallery')
+        }
+        
+        setSceneConfig(data.scene_config)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setConfigLoading(false)
+      }
+    }
+
+    if (galleryName) {
+      fetchSceneConfig()
+    }
+  }, [galleryName])
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
+    <div className="w-screen h-screen relative">
       <TexturePreloader />
-      <Suspense fallback={<SceneLoader />}>
-        <GalleryScene onLoaded={() => setIsLoading(false)} />
-      </Suspense>
+      {configLoading && (
+        <SceneLoader />
+      )}
+      {error && !configLoading && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] bg-red-500 text-white p-5 rounded-lg">
+          Error: {error}
+        </div>
+        
+      )}
+      {!configLoading && !error && sceneConfig && (
+        <Suspense fallback={<SceneLoader />}>
+          <GalleryScene onLoaded={() => setIsLoading(false)} sceneConfig={sceneConfig} />
+        </Suspense>
+      )}
 
       {isLoading && (
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#1a1b1f",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 9999,
-          opacity: isLoading ? 1 : 0,
-          transition: "opacity 0.5s ease-out"
-        }}>
+        <div className={`absolute top-0 left-0 w-full h-full bg-[#1a1b1f] flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
           <div className="text-white text-3xl font-light">
             Loading
             <span className="animate-pulse">.</span>
-            <span className="animate-pulse" style={{ animationDelay: '0.2s' }}>.</span>
-            <span className="animate-pulse" style={{ animationDelay: '0.4s' }}>.</span>
+            <span className="animate-pulse [animation-delay:0.2s]">.</span>
+            <span className="animate-pulse [animation-delay:0.4s]">.</span>
           </div>
         </div>
       )}
 
       <Link 
         href="/galleries"
-        style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          zIndex: 1000,
-          padding: "10px 20px",
-          backgroundColor: "white",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          cursor: "pointer",
-          textDecoration: "none",
-          color: "black"
-        }}
+        className="absolute top-5 left-5 z-[1000] px-5 py-2.5 bg-white border border-gray-300 rounded-md cursor-pointer no-underline text-black"
       >
         ← Back to Galleries
       </Link>

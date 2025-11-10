@@ -19,73 +19,51 @@ const createTexture = (baseTexture, repeatX, repeatY) => {
   return texture
 }
 
-const GalleryRoom = () => {
+const GalleryRoom = ({ sceneConfig }) => {
+  
   const baseFloorTexture = useTexture('/textures/floor.jpg')
   const baseWallTexture = useTexture('/textures/wall.jpg')
   const baseRoofTexture = useTexture('/textures/roof.jpg')
   const basePlinthTexture = useTexture('/textures/plinth.jpg')
 
-  const floorTexture1 = createTexture(baseFloorTexture, 3, 3)
-  const floorTexture2 = createTexture(baseFloorTexture, 6, 6)
   const wallTexture = createTexture(baseWallTexture, 2, 2)
-  const roofTexture1 = createTexture(baseRoofTexture, 1, 1)
-  const roofTexture2 = createTexture(baseRoofTexture, 2, 2)
   const plinthTexture = createTexture(basePlinthTexture, 1, 1)
 
-
-  const floors = [
-    { position: [5, 0, 5], size: 10, texture: floorTexture1 },
-    { position: [10, 0, 20], size: 20, texture: floorTexture2 },
-  ]
-
-  const roofs = [
-    { position: [5, 5.5, 5], size: 10, texture: roofTexture1 },
-    { position: [10, 5.5, 20], size: 20, texture: roofTexture2 },
-  ]
-
-  const walls = [
-    { position: [5, 2, 0], rotation: [0, 0, 0] },
-    { position: [10, 2, 5], rotation: [0, Math.PI / 2, 0] },
-    { position: [15, 2, 10], rotation: [0, 0, 0] },
-    { position: [20, 2, 15], rotation: [0, Math.PI / 2, 0] },
-    { position: [20, 2, 25], rotation: [0, Math.PI / 2, 0] },
-    { position: [15, 2, 30], rotation: [0, 0, 0] },
-    { position: [5, 2, 30], rotation: [0, 0, 0] },
-    { position: [0, 2, 25], rotation: [0, Math.PI / 2, 0] },
-    { position: [0, 2, 15], rotation: [0, Math.PI / 2, 0] },
-    { position: [0, 2, 5], rotation: [0, Math.PI / 2, 0] },
-  ]
-
-  const plinth = [
-    { position: [5, 0.05, 0], size: 10, texture: plinthTexture, rotation: [0, 0, 0] },
-    { position: [10, 0.05, 30], size: 20, texture: plinthTexture, rotation: [0, 0, 0] },
-    { position: [20, 0.05, 20], size: 20, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
-    { position: [0, 0.05, 15], size: 30, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
-    { position: [10, 0.05, 5], size: 10, texture: plinthTexture, rotation: [0, Math.PI / 2, 0] },
-    { position: [15, 0.05, 10], size: 10.3, texture: plinthTexture, rotation: [0, 0, 0] },
-  ]
-
-  const backboard = [
-    { position: [5, 2.7, 0.05], size: 5, rotation: [0, 0, 0] },
-  ]
+  const floors = sceneConfig.floors
+  const roofs = sceneConfig.roofs
+  const walls = sceneConfig.walls
+  const plinth = sceneConfig.plinth
+  const backboard = sceneConfig.backboard
 
   return (
     <>
-      {/* FLOOR */}
-      {floors.map((floor, index) => (
-        <mesh key={index} position={floor.position} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[floor.size, floor.size]} />
-          <meshStandardMaterial map={floor.texture} />
-        </mesh>
-      ))}
+
+
+    {/* FLOOR */}
+      {floors.map((floor, index) => {
+        const repeat = floor.textureRepeat || [1, 1]
+        const floorTexture = createTexture(baseFloorTexture, repeat[0], repeat[1])
+        return (
+          <mesh key={index} position={floor.position} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[floor.size, floor.size]} />
+            <meshStandardMaterial map={floorTexture} />
+          </mesh>
+        )
+      })}
+
+
 
       {/* ROOF */}
-      {roofs.map((roof, index) => (
-        <mesh key={index} position={roof.position} rotation={[Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[roof.size, roof.size]} />
-          <meshStandardMaterial map={roof.texture} />
-        </mesh>
-      ))}
+      {roofs.map((roof, index) => {
+        const repeat = roof.textureRepeat || [1, 1]
+        const roofTexture = createTexture(baseRoofTexture, repeat[0], repeat[1])
+        return (
+          <mesh key={index} position={roof.position} rotation={[Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[roof.size, roof.size]} />
+            <meshStandardMaterial map={roofTexture} />
+          </mesh>
+        )
+      })}
 
 
 
@@ -98,19 +76,21 @@ const GalleryRoom = () => {
       ))}
 
       
+
       {/* PLINTH */}
-      {plinth.map((plinth, index) => (
-        <mesh key={index} position={plinth.position} rotation={plinth.rotation}>
-          <boxGeometry args={[plinth.size, 0.5, 0.3]} />
-          <meshStandardMaterial map={plinth.texture} />
+      {plinth.map((plinthItem, index) => (
+        <mesh key={index} position={plinthItem.position} rotation={plinthItem.rotation}>
+          <boxGeometry args={[plinthItem.size, 0.5, 0.3]} />
+          <meshStandardMaterial map={plinthTexture} />
         </mesh>
       ))}
 
 
+
       {/* BACKBOARD */}
-      {backboard.map((backboard, index) => (
-        <mesh key={index} position={backboard.position} rotation={backboard.rotation}>
-          <boxGeometry args={[backboard.size, 3, 0.1]} />
+      {backboard.map((backboardItem, index) => (
+        <mesh key={index} position={backboardItem.position} rotation={backboardItem.rotation}>
+          <boxGeometry args={[backboardItem.size, 3, 0.1]} />
           <meshStandardMaterial color="midnightblue" />
         </mesh>
       ))}

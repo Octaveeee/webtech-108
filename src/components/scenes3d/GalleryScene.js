@@ -27,7 +27,7 @@ function LoadingDetector({ onLoaded }) {
   return null
 }
 
-const GalleryScene = ({ onLoaded }) => {
+const GalleryScene = ({ onLoaded, sceneConfig }) => {
   return (
     <Canvas shadows>
 
@@ -37,8 +37,8 @@ const GalleryScene = ({ onLoaded }) => {
       <ambientLight intensity={0.5} />
       <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
 
-      {/* 3D Room */}
-      <GalleryRoom />
+      {/* 3D ROOM */}
+      <GalleryRoom sceneConfig={sceneConfig} />
 
       {/* Player + CAMERA */}
       <Player />
