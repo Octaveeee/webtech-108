@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
+import { ArtistCard, ArtistSkeleton } from '@/components/artists'
+
+
 
 export default function Artists() {
   const [artists, setArtists] = useState([])
@@ -33,34 +36,43 @@ export default function Artists() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
       <Navbar />
-      <main className="container py-8 pt-22 flex-1">
-        <h1 className="text-2xl font-bold mb-4">Artists</h1>
-        
-        {loading && <p>Loading artists...</p>}
-        
-        {error && <p className="text-red-500">Error: {error}</p>}
-        
-        {!loading && !error && artists.length === 0 && (
-          <p>No artists found.</p>
-        )}
-        
-        {!loading && !error && artists.length > 0 && (
-          <div>
-            {artists.map((artist) => (
-              <div key={artist.id} style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
-                <h2>{artist.name}</h2>
-                {artist.bio && <p>{artist.bio}</p>}
-                {artist.country && <p>Country: {artist.country}</p>}
-                {artist.birth_date && <p>Birth date: {artist.birth_date}</p>}
-                {artist.image_url && (
-                  <img src={artist.image_url} alt={artist.name} style={{ maxWidth: '200px', marginTop: '10px' }} />
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+      <main className="flex-1 pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-center mb-12">
+            Our Artists
+          </h1>
+          <p className="text-center text-lg text-gray-400 mb-12">
+            Discover the talents that shape our collection.
+          </p>
+          
+          {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => <ArtistSkeleton key={i} />)}
+            </div>
+          )}
+          
+          {error && (
+            <div className="text-center py-20">
+              <p className="text-red-400 text-xl">Error: {error}</p>
+            </div>
+          )}
+          
+          {!loading && !error && artists.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-gray-300 text-xl">No artists found.</p>
+            </div>
+          )}
+          
+          {!loading && !error && artists.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {artists.map((artist) => (
+                <ArtistCard key={artist.id} artist={artist} />
+              ))}
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </div>
