@@ -86,7 +86,7 @@ export default function Galleries() {
 
                   {gallery.finished === true ? (
                     <Link 
-                      href={`/galleries/${encodeURIComponent(gallery.name)}/scene`}
+                      href={`/galleries/${encodeURIComponent(gallery.name)}`}
                       className="mt-4 inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-2 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition"
                     >
                       Visit 3D Gallery
