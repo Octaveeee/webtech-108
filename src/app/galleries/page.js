@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
@@ -60,6 +61,7 @@ export default function Galleries() {
           )}
           
           {!loading && !error && galleries.length > 0 && (
+            
             <div className="space-y-4">
               {galleries.map((gallery) => (
                 <div
@@ -75,7 +77,12 @@ export default function Galleries() {
                     </p>
                   )}
 
-                  
+                  <Link 
+                    href={`/galleries/${encodeURIComponent(gallery.name)}/scene`}
+                    className="mt-4 inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-2 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition"
+                  >
+                    Visit 3D Gallery
+                  </Link>
 
                   {gallery.created_at && gallery.id_user && (
                     <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
