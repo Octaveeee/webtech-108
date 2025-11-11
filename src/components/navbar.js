@@ -10,7 +10,7 @@ export default function Navbar() {
     return (
         <>
             <header className="fixed top-0 left-0 w-full z-50 bg-[#24252a]/95 backdrop-blur border-b border-gray-700">
-                <nav className="container mx-auto flex items-center justify-between h-20 px-6">
+                <nav className="container mx-auto grid grid-cols-3 items-center h-20 px-6">
                     {/* Logo*/}
                     <Link href="/" className="flex items-center gap-2">
                         <Image
@@ -18,12 +18,23 @@ export default function Navbar() {
                         width={70}
                         height={70}
                         alt="Aurora Logo"
-                        priority={true}
                         />
                     </Link>
 
+                    {/* Bouton menu*/}
+                    <div className="flex justify-center">
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="relative w-8 h-6 flex flex-col justify-between items-center group focus:outline-none"
+                        >
+                            <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2.5' : ''}`}></span>
+                            <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
+                            <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
+                        </button>
+                    </div>
+
                     {/* Login */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-end gap-3">
                         <Link href="/auth?mode=login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">
                             Login
                         </Link>
@@ -31,17 +42,6 @@ export default function Navbar() {
                             Register
                         </Link>
                     </div>
-
-                    {/* Bouton menu*/}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="relative w-8 h-6 flex flex-col justify-between items-center group focus:outline-none"
-                        aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
-                    >
-                        <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2.5' : ''}`}></span>
-                        <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
-                        <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
-                    </button>
                 </nav>
             </header>
 
