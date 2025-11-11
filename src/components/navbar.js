@@ -77,7 +77,7 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
-<>
+                            <>
                                 <Link href="/auth?mode=login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition flex items-center gap-2">
                                     <CiLogin size={24} />
                                     Login

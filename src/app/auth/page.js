@@ -43,7 +43,7 @@ function AuthForm() {
           email,
           password,
           options: {
-            // redirection to the page callback after the confirmation email
+            // redirection to the page callback (only if confirmation email is true on supabase)
             emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
               name: name,

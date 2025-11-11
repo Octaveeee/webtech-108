@@ -17,7 +17,10 @@ export default function Galleries() {
         setLoading(true)
         const { data, error } = await supabase
           .from('galleries')
-          .select('*')
+          .select(`
+            *,
+            profiles!galleries_id_user_fkey(name)
+          `)
           .order('name', { ascending: true })
 
         if (error) throw error
@@ -115,7 +118,9 @@ export default function Galleries() {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Created by</p>
-                          <p className="text-gray-900 dark:text-white">{gallery.id_user}</p>
+                          <p className="text-gray-900 dark:text-white">
+                            {gallery.profiles?.name || 'Unknown'}
+                          </p>
                         </div>
                       </div>
                     </div>
