@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function AuthPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   
   // form state
   const [loading, setLoading] = useState(false)
@@ -18,6 +19,17 @@ export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+
+
+  // verify if login or register (from the navbar)
+  useEffect(() => {
+    const mode = searchParams.get('mode')
+    if (mode === 'register') {
+      setIsSignUp(true)
+    } else if (mode === 'login') {
+      setIsSignUp(false)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
