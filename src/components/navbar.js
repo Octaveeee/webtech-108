@@ -1,12 +1,42 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
+import { supabase } from "@/lib/supabaseClient";
+import { CiLogout, CiLogin } from "react-icons/ci";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+
+    const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
     
+    useEffect(() => {
+        // check user login
+        async function getUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            
+            if (user) {
+                const { data } = await supabase.from('profiles').select('name').eq('user_id', user.id).single();
+                setProfile(data);
+            } 
+            setLoading(false);
+        }
+
+        getUser();
+
+
+    }, []);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+        setProfile(null);
+    };
+
+
     return (
         <>
             <header className="fixed top-0 left-0 w-full z-50 bg-[#24252a]/95 backdrop-blur border-b border-gray-700">
@@ -35,12 +65,30 @@ export default function Navbar() {
 
                     {/* Login */}
                     <div className="flex items-center justify-end gap-3">
-                        <Link href="/auth?mode=login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">
-                            Login
-                        </Link>
-                        <Link href="/auth?mode=register" className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
-                            Register
-                        </Link>
+                        {loading ? (
+                            <div className="text-gray-400">Loading...</div>
+                        ) : user && profile ? (
+                            <div className="flex items-center gap-3">
+                                <span className="text-gray-300">{profile.name}</span>
+                                <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-2"
+                                >
+                                    <CiLogout size={24} />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+<>
+                                <Link href="/auth?mode=login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition flex items-center gap-2">
+                                    <CiLogin size={24} />
+                                    Login
+                                </Link>
+                                <Link href="/auth?mode=register" className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                                    Register
+                                </Link>
+                            </>
+
+                        )}
+                        
                     </div>
                 </nav>
             </header>
