@@ -24,12 +24,12 @@ export default function Navbar() {
 
                     {/* Login */}
                     <div className="flex items-center gap-3">
-                        <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">
+                        <Link href="/auth" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition">
                             Login
-                        </button>
-                        <button className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                        </Link>
+                        <Link href="/auth" className="px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
                             Register
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Bouton menu*/}
