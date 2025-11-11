@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 
-export default function AuthPage() {
+function AuthForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -141,7 +141,6 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
       <main className="flex-1 pt-24 pb-16">
         <div className="container mx-auto px-6">
           <div className="max-w-md mx-auto">
@@ -248,6 +247,27 @@ export default function AuthPage() {
             </div>
           </div>
         </div>
+      </main>
+    </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
+      <Navbar />
+      <main className="flex-1 pt-24 pb-16">
+        <Suspense fallback={
+          <div className="container mx-auto px-6">
+            <div className="max-w-md mx-auto">
+              <div className="bg-white dark:bg-[#24252a] rounded-xl p-8 shadow-lg">
+                <div className="animate-pulse text-gray-400">Loading...</div>
+              </div>
+            </div>
+          </div>
+        }>
+          <AuthForm />
+        </Suspense>
       </main>
       <Footer />
     </div>
