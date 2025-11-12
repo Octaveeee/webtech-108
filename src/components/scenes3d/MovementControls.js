@@ -94,14 +94,12 @@ const MovementControls = ({ playerRef }) => {
     camera.position.copy(playerRef.current.position).add(new THREE.Vector3(0, 1.5, 0))
   })
 
-  // pour la position de la caméra
+  // for camera postion
   useEffect(() => {
     if (playerRef.current && camera) {
       camera.position.copy(playerRef.current.position).add(new THREE.Vector3(0, 1.5, 0))
     }
   }, [camera])
-
   return <PointerLockControls ref={controlsRef} />
 }
-
 export default MovementControls

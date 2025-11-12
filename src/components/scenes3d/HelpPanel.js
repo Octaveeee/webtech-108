@@ -1,8 +1,6 @@
 'use client'
 
-
 export default function HelpPanel() {
-  
     return (
         <div className="fixed top-1/2 right-0 transform -translate-y-1/2 z-50 transition-all duration-300">
         <div className="bg-[#1a1b1f]/95 backdrop-blur border-l border-gray-700 shadow-lg">   

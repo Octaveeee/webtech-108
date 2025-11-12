@@ -6,7 +6,6 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
       <Navbar />
-
       <main className="pt-5 flex-1">
         <section className="container mx-auto px-6 pt-20 pb-8 md:pt-32 md:pb-12">
           <div className="max-w-3xl mx-auto text-center">
@@ -17,7 +16,6 @@ export default function Home() {
               Welcome to our online <span className="text-blue-400 font-semibold">Art Gallery</span>. 
               Discover curated collections and immersive 3D exhibitions.
             </p>
-            
           </div>
         </section>
 
@@ -41,7 +39,7 @@ export default function Home() {
                 <div className="text-4xl mb-4">🖼️</div>
                 <h2 className="text-2xl font-bold mb-3 group-hover:text-blue-400 transition">Galleries</h2>
                 <p className="text-gray-400">
-                  Browse through our curated collection of art galleries and exhibitions.
+                  Browse through our curated collection of 3D art galleries and exhibitions.
                 </p>
               </div>
             </Link>
@@ -73,12 +71,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-
       <Footer />
-
     </div>
-
-
-    
   )
 }

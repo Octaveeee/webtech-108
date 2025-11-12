@@ -8,8 +8,6 @@ export default function Contacts() {
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
       <Navbar />
-
-
       <main className="container py-4 pt-20 flex-1">
         <div className="flex flex-1 items-center justify-center px-6 py-8">
           <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-40">
@@ -25,7 +23,6 @@ export default function Contacts() {
             {/* form*/}
             <div className="bg-white dark:bg-[#24252a] text-black dark:text-white rounded-2xl p-8 shadow-xl">
               <form className="flex flex-col space-y-4">
-
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
                   <input type="text" className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black" placeholder="Your name" />
@@ -50,6 +47,7 @@ export default function Contacts() {
               </form>
             </div>
 
+
             {/* séparateur */}
             <div className="md:col-span-2 flex items-center justify-center gap-6">
               <div className="flex-1 h-px bg-gray-600"></div>
@@ -58,13 +56,11 @@ export default function Contacts() {
             </div>
 
 
-
             {/* infos*/}
             <div className="bg-white dark:bg-[#24252a] text-black dark:text-white rounded-2xl p-8 shadow-xl">    
               <h3 className="text-2xl font-bold mb-6 text-center">
                 Contact details
               </h3>
-
 
               {/* Octave SAVEAUX*/}
               <div className="space-y-4">
@@ -107,7 +103,6 @@ export default function Contacts() {
                 </div>
 
 
-
                 {/* Martin BRULEY*/}
                 <a href="mailto:martin.bruley@edu.ece.fr" className="flex items-center gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                   <Mail size={24} className="text-blue-600 dark:text-blue-400" />
@@ -139,11 +134,8 @@ export default function Contacts() {
                   </a>
                 </div>
               </div>
-
             </div>
 
-
-        
             {/* map*/}  
             <div className="bg-white dark:bg-[#24252a] text-black dark:text-white rounded-2xl p-8 shadow-xl">
               <h3 className="text-2xl font-bold mb-6 text-center">
@@ -173,9 +165,7 @@ export default function Contacts() {
           </div>
         </div>
       </main>
-
       <Footer />
-      
     </div>
   )
 }

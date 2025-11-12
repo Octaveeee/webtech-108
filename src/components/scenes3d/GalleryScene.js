@@ -30,7 +30,6 @@ function LoadingDetector({ onLoaded }) {
 const GalleryScene = ({ onLoaded, sceneConfig }) => {
   return (
     <Canvas shadows>
-
       <LoadingDetector onLoaded={onLoaded} />
 
       {/* LIGHTS */}
@@ -48,5 +47,4 @@ const GalleryScene = ({ onLoaded, sceneConfig }) => {
     </Canvas>
   )
 }
-
 export default GalleryScene

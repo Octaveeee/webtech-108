@@ -37,8 +37,6 @@ const GalleryRoom = ({ sceneConfig }) => {
 
   return (
     <>
-
-
     {/* FLOOR */}
       {floors.map((floor, index) => {
         const repeat = floor.textureRepeat || [1, 1]
@@ -50,7 +48,6 @@ const GalleryRoom = ({ sceneConfig }) => {
           </mesh>
         )
       })}
-
 
 
       {/* ROOF */}
@@ -66,7 +63,6 @@ const GalleryRoom = ({ sceneConfig }) => {
       })}
 
 
-
       {/* WALLS */}
       {walls.map((wall, index) => (
         <mesh key={index} position={wall.position} rotation={wall.rotation}>
@@ -76,7 +72,6 @@ const GalleryRoom = ({ sceneConfig }) => {
       ))}
 
       
-
       {/* PLINTH */}
       {plinth.map((plinthItem, index) => (
         <mesh key={index} position={plinthItem.position} rotation={plinthItem.rotation}>
@@ -86,7 +81,6 @@ const GalleryRoom = ({ sceneConfig }) => {
       ))}
 
 
-
       {/* BACKBOARD */}
       {backboard.map((backboardItem, index) => (
         <mesh key={index} position={backboardItem.position} rotation={backboardItem.rotation}>
@@ -94,14 +88,7 @@ const GalleryRoom = ({ sceneConfig }) => {
           <meshStandardMaterial color="midnightblue" />
         </mesh>
       ))}
-
-
-
-      
-      
-      
     </> 
   )
 }
-
 export default GalleryRoom

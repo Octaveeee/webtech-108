@@ -69,15 +69,8 @@ function AuthForm() {
             .insert(profileData)
           
           if (profileError) {
-            console.error('Error creating profile:', profileError)
-            console.error('Error code:', profileError.code)
-            console.error('Error message:', profileError.message)
-            console.error('Error details:', profileError.details)
-            console.error('Error hint:', profileError.hint)
             throw new Error(`Failed to create profile: ${profileError.message}`)
           }
-          
-          console.log('Profile created successfully:', profileResult)
         }
         
         setSuccess("Account created successfully!")
@@ -86,11 +79,11 @@ function AuthForm() {
         setPassword('')
         setBirthDate('')
         
-        // redirect to home page (delay)
+        // redirect to auth page login mode
         setTimeout(() => {
-          router.push('/auth')
+          router.push('/auth?mode=login')
           router.refresh()
-        }, 1500)
+        }, 2000)
         
       } else {
         // login
@@ -105,7 +98,7 @@ function AuthForm() {
         setTimeout(() => {
           router.push('/')
           router.refresh()
-        }, 1500)
+        }, 2000)
       }
     } catch (error) {
       // all the erros
