@@ -8,8 +8,9 @@
 */
 
 'use client'
-import { useTexture } from '@react-three/drei'
-import { RepeatWrapping } from 'three'
+import { useTexture, useGLTF } from '@react-three/drei'
+import { RepeatWrapping, Box3, Vector3 } from 'three'
+import * as THREE from 'three'
 
 const createTexture = (baseTexture, repeatX, repeatY) => {
   const texture = baseTexture.clone()
@@ -19,13 +20,60 @@ const createTexture = (baseTexture, repeatX, repeatY) => {
   return texture
 }
 
+// paintings frames
+const Frame3D = ({ modelPath, width, height, frameThickness, frameScale }) => {
+  if (!modelPath) return null
+  
+  const frameModel = useGLTF(modelPath)
+  const clonedScene = frameModel.scene.clone()
+  
+  const box = new THREE.Box3().setFromObject(clonedScene)
+  const modelSize = box.getSize(new THREE.Vector3())
+  
+  const targetWidth = width + frameThickness * 2
+  const targetHeight = height + frameThickness * 2
+  
+  const scaleFactor = frameScale || 1
+  const scaleX = (targetWidth / Math.max(modelSize.x, 0.001)) * scaleFactor
+  const scaleY = (targetHeight / Math.max(modelSize.y, 0.001)) * scaleFactor
+  const scaleZ = scaleFactor
+  
+  return (
+    <primitive
+      object={clonedScene}
+      scale={[scaleX, scaleY, scaleZ]}
+      rotation={[0, Math.PI, 0]}
+    />
+  )
+}
+
 const Painting = ({ painting }) => {
   const texture = useTexture(painting.img_url)
+  const [width, height] = painting.size || [2, 2]
+  
+  const frameThickness = painting.frameThickness || 0.1
+  const frameScale = painting.frameScale || 1
+  
+
+  const frameModelPath = '/textures/picture_frame.glb'
+  
   return (
-    <mesh position={painting.position} rotation={painting.rotation}>
-      <planeGeometry args={painting.size} />
-      <meshStandardMaterial map={texture} />
-    </mesh>
+    <group position={painting.position} rotation={painting.rotation}>
+      {/* painting */}
+      <mesh position={[0, 0, 0.01]}>
+        <planeGeometry args={[width, height]} />
+        <meshStandardMaterial map={texture} />
+      </mesh>
+      
+      {/* frame */}
+      <Frame3D
+        modelPath={frameModelPath}
+        width={width}
+        height={height}
+        frameThickness={frameThickness}
+        frameScale={frameScale}
+      />
+    </group>
   )
 }
 
