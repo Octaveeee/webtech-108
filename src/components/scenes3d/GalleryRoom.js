@@ -19,6 +19,16 @@ const createTexture = (baseTexture, repeatX, repeatY) => {
   return texture
 }
 
+const Painting = ({ painting }) => {
+  const texture = useTexture(painting.img_url)
+  return (
+    <mesh position={painting.position} rotation={painting.rotation}>
+      <planeGeometry args={painting.size} />
+      <meshStandardMaterial map={texture} />
+    </mesh>
+  )
+}
+
 const GalleryRoom = ({ sceneConfig }) => {
   
   const baseFloorTexture = useTexture('/textures/floor.jpg')
@@ -34,6 +44,7 @@ const GalleryRoom = ({ sceneConfig }) => {
   const walls = sceneConfig.walls
   const plinth = sceneConfig.plinth
   const backboard = sceneConfig.backboard
+  const paintings = sceneConfig.paintings
 
   return (
     <>
@@ -87,6 +98,11 @@ const GalleryRoom = ({ sceneConfig }) => {
           <boxGeometry args={[backboardItem.size, 3, 0.1]} />
           <meshStandardMaterial color="midnightblue" />
         </mesh>
+      ))}
+
+      {/* PAINTINGS */}
+      {paintings && paintings.map((painting, index) => (
+        <Painting key={index} painting={painting} />
       ))}
     </> 
   )

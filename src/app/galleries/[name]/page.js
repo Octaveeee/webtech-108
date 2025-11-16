@@ -1,127 +1,139 @@
 'use client'
 
-import { useState, Suspense, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import GalleryScene from '@/components/scenes3d/GalleryScene'
-import HelpPanel from '@/components/scenes3d/HelpPanel'
+import Navbar from '@/components/navbar'
+import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 
-function TexturePreloader() {
-  useEffect(() => {
-    const textures = [
-      '/textures/floor.jpg',
-      '/textures/wall.jpg',
-      '/textures/roof.jpg',
-      '/textures/plinth.jpg'
-    ]
-    
-    textures.forEach(src => {
-      const link = document.createElement('link')
-      link.rel = 'preload'
-      link.as = 'image'
-      link.href = src
-      document.head.appendChild(link)
-    })
-    
-    return () => {
-      textures.forEach(src => {
-        const link = document.querySelector(`link[href="${src}"]`)
-        if (link) link.remove()
-      })
-    }
-  }, [])
-  
-  return null
-}
-
-function SceneLoader() {
-  return (
-    <div className="w-screen h-screen bg-[#1a1b1f] flex items-center justify-center">
-      <div className="text-white text-3xl font-light">
-        Loading
-        <span className="animate-pulse">.</span>
-        <span className="animate-pulse [animation-delay:0.2s]">.</span>
-        <span className="animate-pulse [animation-delay:0.4s]">.</span>
-      </div>
-    </div>
-  )
-}
-
-export default function GalleryScenePage() {
+export default function GalleryDetail() {
   const params = useParams()
-  const galleryName = decodeURIComponent(params.name)
-  const [isLoading, setIsLoading] = useState(true)
-  const [sceneConfig, setSceneConfig] = useState(null)
+  const nameParam = params.name
+  const galleryName = decodeURIComponent(nameParam).replaceAll('-', ' ')
+  const [gallery, setGallery] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [configLoading, setConfigLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchSceneConfig() {
+    async function fetchGallery() {
       try {
-        setConfigLoading(true)
+        setLoading(true)
         const { data, error } = await supabase
           .from('galleries')
-          .select('scene_config')
+          .select(`
+            *,
+            profiles!galleries_id_user_fkey(name)
+          `)
           .eq('name', galleryName)
           .single()
 
         if (error) throw error
-        
-        if (!data?.scene_config) {
-          throw new Error('No scene configuration found for this gallery')
-        }
-        
-        setSceneConfig(data.scene_config)
+        setGallery(data)
       } catch (err) {
         setError(err.message)
+        console.error('Error fetching gallery:', err)
       } finally {
-        setConfigLoading(false)
+        setLoading(false)
       }
     }
 
     if (galleryName) {
-      fetchSceneConfig()
+      fetchGallery()
     }
   }, [galleryName])
 
+  const galleryNameForUrl = galleryName.replaceAll(' ', '-')
+
   return (
-    <div className="w-screen h-screen relative">
-      <TexturePreloader />
-      {configLoading && (
-        <SceneLoader />
-      )}
-      {error && !configLoading && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] bg-red-500 text-white p-5 rounded-lg">
-          Error: {error}
+    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
+      <Navbar />
+      <main className="flex-1 pt-24 pb-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <Link href="/galleries" className="text-gray-400 hover:text-white mb-6 inline-block">
+            ← Back to Galleries
+          </Link>
+
+          {loading && (
+            <div className="text-center py-20">
+              <p className="text-gray-300 text-xl">Loading gallery...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="text-center py-20">
+              <p className="text-gray-300 text-xl">Gallery not found.</p>
+            </div>
+          )}
+
+          {!loading && !error && gallery && (
+            <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl overflow-hidden">
+              <div className="flex items-center gap-2 mb-4">
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                  {gallery.name}
+                </h1>
+                {gallery.finished === false && (
+                  <span className="text-sm text-orange-500 dark:text-orange-400 font-medium">
+                    (in development)
+                  </span>
+                )}
+              </div>
+
+              {gallery.description && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Description</h2>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed break-words">
+                    {gallery.description}
+                  </p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {gallery.created_at && (
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Created at</p>
+                    <p className="text-gray-900 dark:text-white">
+                      {new Date(gallery.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                )}
+
+                {gallery.profiles && (
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Created by</p>
+                    <p className="text-gray-900 dark:text-white">
+                      {gallery.profiles.name || 'Unknown'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center">
+                {gallery.finished === true ? (
+                  <Link 
+                    href={`/galleries/${encodeURIComponent(galleryNameForUrl)}/scene`}
+                    className="inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-3 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold"
+                  >
+                    Visit 3D Gallery
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="inline-block rounded-lg bg-gray-400 dark:bg-gray-600 px-6 py-3 text-white cursor-not-allowed opacity-50 font-semibold"
+                  >
+                    Visit 3D Gallery (Coming Soon)
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-        
-      )}
-      {!configLoading && !error && sceneConfig && (
-        <Suspense fallback={<SceneLoader />}>
-          <GalleryScene onLoaded={() => setIsLoading(false)} sceneConfig={sceneConfig} />
-        </Suspense>
-      )}
-
-      {isLoading && (
-        <div className={`absolute top-0 left-0 w-full h-full bg-[#1a1b1f] flex items-center justify-center z-[9999] transition-opacity duration-500 ease-out ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-white text-3xl font-light">
-            Loading
-            <span className="animate-pulse">.</span>
-            <span className="animate-pulse [animation-delay:0.2s]">.</span>
-            <span className="animate-pulse [animation-delay:0.4s]">.</span>
-          </div>
-        </div>
-      )}
-
-      <Link 
-        href="/galleries"
-        className="absolute top-5 left-5 z-[1000] px-5 py-2.5 bg-white border border-gray-300 rounded-md cursor-pointer no-underline text-black"
-      >
-        ← Back to Galleries
-      </Link>
-
-      <HelpPanel/>
+      </main>
+      <Footer />
     </div>
   )
 }
