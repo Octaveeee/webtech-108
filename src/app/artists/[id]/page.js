@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabaseClient'
 export default function ArtistDetail() {
   const params = useParams()
   const nameParam = params.id
-  const artistName = decodeURIComponent(nameParam)
+  const artistName = decodeURIComponent(nameParam).replaceAll('-', ' ')
   const [artist, setArtist] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)

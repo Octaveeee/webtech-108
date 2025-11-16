@@ -3,9 +3,12 @@ import Link from 'next/link'
 
 export const ArtistCard = ({ artist }) => {
   const imageUrl = artist.img_url
+
+  const artistName = artist.name.replaceAll(' ', '-')
+  
   
   return (
-    <Link href={`/artists/${encodeURIComponent(artist.name)}`}>
+    <Link href={`/artists/${encodeURIComponent(artistName)}`}>
       <div className="group bg-white dark:bg-[#24252a] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all cursor-pointer">
         <div className="relative w-full h-80 overflow-hidden bg-gray-100 dark:bg-gray-700">
           {imageUrl ? (
