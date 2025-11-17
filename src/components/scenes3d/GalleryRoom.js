@@ -22,9 +22,12 @@ const createTexture = (baseTexture, repeatX, repeatY) => {
 
 // paintings frames
 const Frame3D = ({ modelPath, width, height, frameThickness, frameScale }) => {
-  if (!modelPath) return null
+  const defaultPath = '/textures/picture_frame.glb'
+  const path = modelPath || defaultPath
+  const frameModel = useGLTF(path)
   
-  const frameModel = useGLTF(modelPath)
+  if (!frameModel || !frameModel.scene) return null
+  
   const clonedScene = frameModel.scene.clone()
   
   const box = new THREE.Box3().setFromObject(clonedScene)
