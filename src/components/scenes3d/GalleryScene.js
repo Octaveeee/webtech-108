@@ -33,7 +33,7 @@ const GalleryScene = ({ onLoaded, sceneConfig }) => {
       <LoadingDetector onLoaded={onLoaded} />
 
       {/* LIGHTS */}
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.7} />
       <directionalLight position={[5, 10, 5]} intensity={1} castShadow />
 
       {/* 3D ROOM */}
