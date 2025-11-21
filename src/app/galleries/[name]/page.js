@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
+import { CiTrash } from 'react-icons/ci'
 
 export default function GalleryDetail() {
   const params = useParams()
@@ -14,6 +15,15 @@ export default function GalleryDetail() {
   const [gallery, setGallery] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [user, setUser] = useState(null)
+  const [profile, setProfile] = useState(null)
+  const [userLoading, setUserLoading] = useState(true)
+  const [comments, setComments] = useState([])
+  const [commentsLoading, setCommentsLoading] = useState(true)
+  const [commentContent, setCommentContent] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [commentError, setCommentError] = useState(null)
+  const [deletingCommentId, setDeletingCommentId] = useState(null)
 
   useEffect(() => {
     async function fetchGallery() {
@@ -32,7 +42,6 @@ export default function GalleryDetail() {
         setGallery(data)
       } catch (err) {
         setError(err.message)
-        console.error('Error fetching gallery:', err)
       } finally {
         setLoading(false)
       }
@@ -42,6 +51,126 @@ export default function GalleryDetail() {
       fetchGallery()
     }
   }, [galleryName])
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      if (user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('user_id', user.id)
+          .single()
+        setProfile(data)
+      }
+      setUserLoading(false)
+    }
+
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      if (session?.user) {
+        supabase.from('profiles').select('name').eq('user_id', session.user.id).single()
+          .then(({ data }) => setProfile(data))
+      } else {
+        setProfile(null)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const fetchCommentsWithProfiles = async (galleryId) => {
+    const { data: commentsData, error: commentsError } = await supabase
+      .from('comments')
+      .select('*')
+      .eq('gallery_id', galleryId)
+      .order('created_at', { ascending: false })
+
+    if (commentsError) throw commentsError
+    if (!commentsData?.length) return []
+
+    const userIds = [...new Set(commentsData.map(c => c.user_id))]
+    const { data: profilesData, error: profilesError } = await supabase
+      .from('profiles')
+      .select('user_id, name')
+      .in('user_id', userIds)
+
+    if (profilesError) throw profilesError
+
+    return commentsData.map(comment => ({
+      ...comment,
+      profiles: profilesData?.find(p => p.user_id === comment.user_id) || null
+    }))
+  }
+
+  useEffect(() => {
+    if (!gallery?.id_galleries) return
+
+    const fetchComments = async () => {
+      try {
+        setCommentsLoading(true)
+        const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
+        setComments(comments)
+      } catch (err) {
+        setComments([])
+      } finally {
+        setCommentsLoading(false)
+      }
+    }
+
+    fetchComments()
+  }, [gallery])
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault()
+    if (!user || !gallery || !commentContent.trim()) return
+
+    setSubmitting(true)
+    setCommentError(null)
+
+    try {
+      const { error } = await supabase.from('comments').insert({
+        user_id: user.id,
+        gallery_id: gallery.id_galleries,
+        content: commentContent.trim()
+      })
+
+      if (error) throw error
+
+      setCommentContent('')
+      const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
+      setComments(comments)
+    } catch (err) {
+      setCommentError(err.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleDeleteComment = async (commentId) => {
+    if (!user || !gallery) return
+
+    setDeletingCommentId(commentId)
+    try {
+      const { error } = await supabase
+        .from('comments')
+        .delete()
+        .eq('id', commentId)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
+      setComments(comments)
+    } catch (err) {
+      // silent fail
+    } finally {
+      setDeletingCommentId(null)
+    }
+  }
 
   const galleryNameForUrl = galleryName.replaceAll(' ', '-')
 
@@ -72,7 +201,7 @@ export default function GalleryDetail() {
                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
                   {gallery.name}
                 </h1>
-                {gallery.finished === false && (
+                {!gallery.finished && (
                   <span className="text-sm text-orange-500 dark:text-orange-400 font-medium">
                     (in development)
                   </span>
@@ -113,7 +242,7 @@ export default function GalleryDetail() {
               </div>
 
               <div className="text-center">
-                {gallery.finished === true ? (
+                {gallery.finished ? (
                   <Link 
                     href={`/galleries/${encodeURIComponent(galleryNameForUrl)}/scene`}
                     className="inline-block rounded-lg bg-gray-800 dark:bg-gray-700 px-6 py-3 text-white hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold"
@@ -127,6 +256,113 @@ export default function GalleryDetail() {
                   >
                     Visit 3D Gallery (Coming Soon)
                   </button>
+                )}
+              </div>
+
+              <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                  Comments
+                </h2>
+
+                <div className="space-y-4 mb-8">
+                  {commentsLoading ? (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <p>Loading comments...</p>
+                    </div>
+                  ) : comments.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                  ) : (
+                    comments.map((comment) => (
+                      <div key={comment.id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 relative">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
+                            <span className="text-gray-600 dark:text-gray-300 font-semibold">
+                              {comment.profiles?.name?.[0]?.toUpperCase() || 'U'}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-semibold text-gray-900 dark:text-white">
+                                {comment.profiles?.name || 'Unknown User'}
+                              </p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {new Date(comment.created_at).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                            <p className="text-gray-700 dark:text-gray-300 break-words whitespace-pre-wrap">
+                              {comment.content}
+                            </p>
+                          </div>
+                        </div>
+                        {user && comment.user_id === user.id && (
+                          <button
+                            onClick={() => handleDeleteComment(comment.id)}
+                            disabled={deletingCommentId === comment.id}
+                            className="absolute top-1/2 right-4 -translate-y-1/2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Delete comment"
+                          >
+                            <CiTrash size={20} />
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {userLoading ? (
+                  <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-6 text-center">
+                    <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+                  </div>
+                ) : user && profile ? (
+                  <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                      Add a Comment
+                    </h3>
+                    {commentError && (
+                      <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg text-sm">
+                        {commentError}
+                      </div>
+                    )}
+                    <form onSubmit={handleSubmitComment} className="space-y-4">
+                      <textarea
+                        value={commentContent}
+                        onChange={(e) => setCommentContent(e.target.value)}
+                        placeholder="Write your comment here..."
+                        rows={4}
+                        required
+                        className="w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      />
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={submitting || !commentContent.trim()}
+                          className="px-6 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {submitting ? 'Posting...' : 'Post Comment'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="bg-gray-200 dark:bg-gray-800 rounded-lg p-6 text-center">
+                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                      You must be logged in to post a comment.
+                    </p>
+                    <Link
+                      href="/auth?mode=login"
+                      className="inline-block px-6 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold"
+                    >
+                      Login to Comment
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
