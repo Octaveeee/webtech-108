@@ -12,6 +12,10 @@ export default function Navbar() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showProfile, setShowProfile] = useState(false);
+    const [editingName, setEditingName] = useState(false);
+    const [newName, setNewName] = useState('');
+    const [updatingName, setUpdatingName] = useState(false);
+    const [nameError, setNameError] = useState(null);
     
     useEffect(() => {
         // check user login
@@ -34,6 +38,63 @@ export default function Navbar() {
         await supabase.auth.signOut();
         setUser(null);
         setProfile(null);
+    };
+
+    const canEditName = () => {
+        if (!profile?.updated_at) return true;
+        const lastUpdate = new Date(profile.updated_at);
+        const now = new Date();
+        const daysDiff = (now - lastUpdate) / (1000 * 60 * 60 * 24);
+        return daysDiff >= 5;
+    };
+
+    const handleStartEditName = () => {
+        if (!canEditName()) return;
+        setNewName(profile.name);
+        setEditingName(true);
+        setNameError(null);
+    };
+
+    const handleCancelEditName = () => {
+        setEditingName(false);
+        setNewName('');
+        setNameError(null);
+    };
+
+    const handleUpdateName = async () => {
+        if (!newName.trim() || newName.trim() === profile.name) {
+            setEditingName(false);
+            return;
+        }
+
+        if (!canEditName()) {
+            setNameError('You can only change your name once every 5 days');
+            return;
+        }
+
+        setUpdatingName(true);
+        setNameError(null);
+
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({
+                    name: newName.trim(),
+                    updated_at: new Date().toISOString()
+                })
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+
+            const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+            setProfile(data);
+            setEditingName(false);
+            setNewName('');
+        } catch (err) {
+            setNameError(err.message);
+        } finally {
+            setUpdatingName(false);
+        }
     };
 
 
@@ -68,7 +129,17 @@ export default function Navbar() {
                         {loading ? (<div className="text-gray-400">Loading...</div>) : user && profile ? (
 
                             <div className="flex items-center gap-5">
-                                <button onClick={() => setShowProfile(true)} className="px-4 py-2 text-sm font-medium bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition">
+                                <button 
+                                    onClick={async () => {
+                                        const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+                                        setProfile(data);
+                                        setEditingName(false);
+                                        setNewName('');
+                                        setNameError(null);
+                                        setShowProfile(true);
+                                    }} 
+                                    className="px-4 py-2 text-sm font-medium bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition"
+                                >
                                     {profile.name}
                                 </button>
                                 <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-2">
@@ -130,7 +201,12 @@ export default function Navbar() {
             </div>
 
             {showProfile && profile && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setShowProfile(false)}>
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => {
+                    setShowProfile(false);
+                    setEditingName(false);
+                    setNewName('');
+                    setNameError(null);
+                }}>
                     <div className="bg-[#24252a] rounded-lg p-6 max-w-md w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-bold text-white">Profile</h2>
@@ -140,8 +216,68 @@ export default function Navbar() {
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <p className="text-sm text-gray-400 mb-1">Name</p>
-                                <p className="text-white text-lg">{profile.name}</p>
+                                <div className="flex items-center justify-between mb-1">
+                                    <p className="text-sm text-gray-400">Name</p>
+                                    {!editingName && canEditName() && (
+                                        <button
+                                            onClick={handleStartEditName}
+                                            className="text-sm text-blue-400 hover:text-blue-300 transition"
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                </div>
+                                {editingName ? (
+                                    <div className="space-y-2">
+                                        <input
+                                            type="text"
+                                            value={newName}
+                                            onChange={(e) => setNewName(e.target.value)}
+                                            disabled={updatingName}
+                                            className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                                            autoFocus
+                                        />
+                                        {nameError && (
+                                            <p className="text-sm text-red-400">{nameError}</p>
+                                        )}
+                                        {!canEditName() && (
+                                            <p className="text-sm text-orange-400">
+                                                You can only change your name once every 5 days
+                                            </p>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={handleUpdateName}
+                                                disabled={updatingName || !newName.trim()}
+                                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {updatingName ? 'Saving...' : 'Save'}
+                                            </button>
+                                            <button
+                                                onClick={handleCancelEditName}
+                                                disabled={updatingName}
+                                                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition text-sm disabled:opacity-50"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <p className="text-white text-lg">{profile.name}</p>
+                                        {!canEditName() && profile.updated_at && (() => {
+                                            const lastUpdate = new Date(profile.updated_at);
+                                            const now = new Date();
+                                            const daysDiff = (now - lastUpdate) / (1000 * 60 * 60 * 24);
+                                            const daysRemaining = Math.ceil(5 - daysDiff);
+                                            return (
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    Name can be changed again in {daysRemaining} day{daysRemaining !== 1 ? 's' : ''}
+                                                </p>
+                                            );
+                                        })()}
+                                    </>
+                                )}
                             </div>
                             {profile.birth_date && (
                                 <div>
