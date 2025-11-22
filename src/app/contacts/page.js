@@ -51,7 +51,7 @@ export default function Contacts() {
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
       <Navbar />
-      <main className="container py-4 pt-20 flex-1">
+      <main className="container mx-auto py-4 pt-20 flex-1">
         <div className="flex flex-1 items-center justify-center px-6 py-8">
           <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-40">
 
