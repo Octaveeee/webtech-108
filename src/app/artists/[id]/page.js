@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
@@ -66,14 +67,13 @@ export default function ArtistDetail() {
           {!loading && !error && artist && (
             <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl overflow-hidden">
               {artist.img_url && (
-                <div className="mb-6">
-                  <img
+                <div className="mb-6 relative w-full h-96 rounded-lg overflow-hidden">
+                  <Image
                     src={artist.img_url}
                     alt={artist.name}
-                    className="w-full h-96 object-cover rounded-lg"
-                    onError={(e) => {
-                      e.target.style.display = 'none'
-                    }}
+                    fill
+                    className="object-cover"
+                    unoptimized
                   />
                 </div>
               )}

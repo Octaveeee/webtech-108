@@ -117,7 +117,7 @@ export default function GalleryDetail() {
         setCommentsLoading(true)
         const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
         setComments(comments)
-      } catch (err) {
+      } catch {
         setComments([])
       } finally {
         setCommentsLoading(false)
@@ -168,7 +168,7 @@ export default function GalleryDetail() {
 
       const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
       setComments(comments)
-    } catch (err) {
+    } catch {
       // silent fail
     } finally {
       setDeletingCommentId(null)
@@ -189,7 +189,7 @@ export default function GalleryDetail() {
       if (error) throw error
 
       router.push('/galleries')
-    } catch (err) {
+    } catch {
       setDeletingGallery(false)
       setShowDeleteConfirm(false)
     }
@@ -410,7 +410,7 @@ export default function GalleryDetail() {
           <div className="bg-white dark:bg-[#24252a] rounded-lg p-6 max-w-md w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Delete Gallery</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Are you sure you want to delete "{gallery.name}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{gallery.name}&quot;? This action cannot be undone.
             </p>
             <div className="flex gap-3 justify-end">
               <button

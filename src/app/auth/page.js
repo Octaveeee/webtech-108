@@ -64,7 +64,7 @@ function AuthForm() {
             profileData.birth_date = birthDate
           }
           
-          const { error: profileError, data: profileResult } = await supabase
+          const { error: profileError } = await supabase
             .from('profiles')
             .insert(profileData)
           
@@ -87,7 +87,7 @@ function AuthForm() {
         
       } else {
         // login
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
