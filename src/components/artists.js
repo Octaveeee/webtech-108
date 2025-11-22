@@ -1,5 +1,5 @@
-
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const ArtistCard = ({ artist }) => {
   const imageUrl = artist.img_url
@@ -12,13 +12,12 @@ export const ArtistCard = ({ artist }) => {
       <div className="group bg-white dark:bg-[#24252a] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all cursor-pointer">
         <div className="relative w-full h-80 overflow-hidden bg-gray-100 dark:bg-gray-700">
           {imageUrl ? (
-            <img
+            <Image
               src={imageUrl}
               alt={artist.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.style.display = 'none'
-              }}
+              fill
+              className="object-cover"
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">

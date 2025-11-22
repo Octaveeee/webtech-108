@@ -9,7 +9,7 @@
 
 'use client'
 import { useTexture, useGLTF } from '@react-three/drei'
-import { RepeatWrapping, Box3, Vector3 } from 'three'
+import { RepeatWrapping } from 'three'
 import * as THREE from 'three'
 
 const createTexture = (baseTexture, repeatX, repeatY) => {

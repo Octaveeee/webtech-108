@@ -122,7 +122,7 @@ export default function CreateGallery() {
     try {
       const sceneConfig = getGalleryConfig(selectedLayout)
 
-      const { data, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('galleries')
         .insert({
           name: formData.name.trim(),

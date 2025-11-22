@@ -52,7 +52,7 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [])
+  }, [playerRef])
 
   useFrame((state, delta) => {
     if (!playerRef.current) return
@@ -100,12 +100,11 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
     camera.position.copy(playerRef.current.position).add(new THREE.Vector3(0, 1.5, 0))
   })
 
-  // for camera postion
   useEffect(() => {
     if (playerRef.current && camera) {
       camera.position.copy(playerRef.current.position).add(new THREE.Vector3(0, 1.5, 0))
     }
-  }, [camera])
+  }, [camera, playerRef])
   return <PointerLockControls ref={controlsRef} />
 }
 export default MovementControls
