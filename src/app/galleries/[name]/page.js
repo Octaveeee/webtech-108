@@ -27,6 +27,7 @@ export default function GalleryDetail() {
   const [deletingCommentId, setDeletingCommentId] = useState(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deletingGallery, setDeletingGallery] = useState(false)
+  const [updatingFinished, setUpdatingFinished] = useState(false)
 
   useEffect(() => {
     async function fetchGallery() {
@@ -195,6 +196,27 @@ export default function GalleryDetail() {
     }
   }
 
+  const handleToggleFinished = async () => {
+    if (!user || !gallery || !user.id || gallery.id_user !== user.id) return
+
+    setUpdatingFinished(true)
+    try {
+      const { error } = await supabase
+        .from('galleries')
+        .update({ finished: !gallery.finished })
+        .eq('id_galleries', gallery.id_galleries)
+        .eq('id_user', user.id)
+
+      if (error) throw error
+
+      setGallery({ ...gallery, finished: !gallery.finished })
+    } catch (err) {
+      console.error('Error updating gallery:', err)
+    } finally {
+      setUpdatingFinished(false)
+    }
+  }
+
   const galleryNameForUrl = galleryName.replaceAll(' ', '-')
 
   return (
@@ -232,13 +254,32 @@ export default function GalleryDetail() {
                   )}
                 </div>
                 {user && gallery.id_user === user.id && (
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-2"
-                  >
-                    <CiTrash size={20} />
-                    Delete Gallery
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleToggleFinished}
+                      disabled={updatingFinished}
+                      className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
+                        gallery.finished
+                          ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                          : 'bg-green-500 hover:bg-green-600 text-white'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {updatingFinished ? (
+                        'Updating...'
+                      ) : gallery.finished ? (
+                        'Mark as In Development'
+                      ) : (
+                        'Mark as Finished'
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-2"
+                    >
+                      <CiTrash size={20} />
+                      Delete Gallery
+                    </button>
+                  </div>
                 )}
               </div>
 
