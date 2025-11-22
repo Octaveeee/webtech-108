@@ -30,23 +30,14 @@ export class CollisionBox {
 }
 
 
-export function createCollisionBoxes() {
+export function createCollisionBoxes(sceneConfig) {
     const boxes = []
     
-    const walls = [
-        { position: [5, 2, 0], rotation: [0, 0, 0] },
-        { position: [10, 2, 5], rotation: [0, Math.PI / 2, 0] },
-        { position: [15, 2, 10], rotation: [0, 0, 0] },
-        { position: [20, 2, 15], rotation: [0, Math.PI / 2, 0] },
-        { position: [20, 2, 25], rotation: [0, Math.PI / 2, 0] },
-        { position: [15, 2, 30], rotation: [0, 0, 0] },
-        { position: [5, 2, 30], rotation: [0, 0, 0] },
-        { position: [0, 2, 25], rotation: [0, Math.PI / 2, 0] },
-        { position: [0, 2, 15], rotation: [0, Math.PI / 2, 0] },
-        { position: [0, 2, 5], rotation: [0, Math.PI / 2, 0] },
-    ]
+    if (!sceneConfig || !sceneConfig.walls) {
+        return boxes
+    }
     
-    walls.forEach(wall => {
+    sceneConfig.walls.forEach(wall => {
         boxes.push(new CollisionBox(
             wall.position,
             [10, 7, 0.1],

@@ -11,7 +11,6 @@
 import { useEffect } from 'react'
 import { useProgress } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { PointerLockControls } from '@react-three/drei'
 import Player from './Player'
 import GalleryRoom from './GalleryRoom'
 
@@ -40,10 +39,7 @@ const GalleryScene = ({ onLoaded, sceneConfig }) => {
       <GalleryRoom sceneConfig={sceneConfig} />
 
       {/* Player + CAMERA */}
-      <Player />
-
-      {/* Controls */}
-      <PointerLockControls />
+      <Player sceneConfig={sceneConfig} />
     </Canvas>
   )
 }

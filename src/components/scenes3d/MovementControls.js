@@ -6,10 +6,16 @@ import { useThree, useFrame } from '@react-three/fiber'
 import { createCollisionBoxes, checkCollision } from './Collision'
 import * as THREE from 'three'
 
-const MovementControls = ({ playerRef }) => {
+const MovementControls = ({ playerRef, sceneConfig }) => {
   const controlsRef = useRef()
   const { camera } = useThree()
-  const collisionBoxes = useRef(createCollisionBoxes())
+  const collisionBoxes = useRef(createCollisionBoxes(sceneConfig))
+  
+  useEffect(() => {
+    if (sceneConfig) {
+      collisionBoxes.current = createCollisionBoxes(sceneConfig)
+    }
+  }, [sceneConfig])
   
   const keys = useRef({ forward: false, backward: false, left: false, right: false, jump: false })
   const verticalVelocity = useRef(0)

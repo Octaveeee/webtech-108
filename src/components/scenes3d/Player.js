@@ -5,7 +5,7 @@ import MovementControls from './MovementControls'
 
 const SPAWN_POSITION = [5, 1, 5]
 
-const Player = () => {
+const Player = ({ sceneConfig }) => {
   const playerRef = useRef()
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const Player = () => {
         <boxGeometry args={[0.5, 1, 0.5]} />
         <meshStandardMaterial color="orange" />
       </mesh>
-      <MovementControls playerRef={playerRef} />
+      <MovementControls playerRef={playerRef} sceneConfig={sceneConfig} />
     </>
   )
 }

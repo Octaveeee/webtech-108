@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
@@ -63,10 +64,36 @@ export default function Galleries() {
           )}
           
           {!loading && !error && galleries.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {galleries.map((gallery) => (
-                <GalleryCard key={gallery.id_galleries} gallery={gallery} />
-              ))}
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {galleries.map((gallery) => (
+                  <GalleryCard key={gallery.id_galleries} gallery={gallery} />
+                ))}
+              </div>
+              
+              {/* séparateur */}
+              <div className="mt-16 flex items-center justify-center gap-6 flex-1 h-px bg-gray-600"></div>
+
+              {/* Bouton Create Gallery */}
+              <div className="mt-12 text-center">
+                <Link
+                  href="/galleries/create"
+                  className="inline-block px-8 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold"
+                >
+                  Create Gallery
+                </Link>
+              </div>
+            </>
+          )}
+
+          {!loading && !error && galleries.length === 0 && (
+            <div className="text-center mt-12">
+              <Link
+                href="/galleries/create"
+                className="inline-block px-8 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold"
+              >
+                Create your own Gallery
+              </Link>
             </div>
           )}
         </div>
