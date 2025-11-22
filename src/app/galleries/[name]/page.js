@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
@@ -10,6 +10,7 @@ import { CiTrash } from 'react-icons/ci'
 
 export default function GalleryDetail() {
   const params = useParams()
+  const router = useRouter()
   const nameParam = params.name
   const galleryName = decodeURIComponent(nameParam).replaceAll('-', ' ')
   const [gallery, setGallery] = useState(null)
@@ -24,6 +25,8 @@ export default function GalleryDetail() {
   const [submitting, setSubmitting] = useState(false)
   const [commentError, setCommentError] = useState(null)
   const [deletingCommentId, setDeletingCommentId] = useState(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deletingGallery, setDeletingGallery] = useState(false)
 
   useEffect(() => {
     async function fetchGallery() {
@@ -172,6 +175,26 @@ export default function GalleryDetail() {
     }
   }
 
+  const handleDeleteGallery = async () => {
+    if (!user || !gallery || !user.id || gallery.id_user !== user.id) return
+
+    setDeletingGallery(true)
+    try {
+      const { error } = await supabase
+        .from('galleries')
+        .delete()
+        .eq('id_galleries', gallery.id_galleries)
+        .eq('id_user', user.id)
+
+      if (error) throw error
+
+      router.push('/galleries')
+    } catch (err) {
+      setDeletingGallery(false)
+      setShowDeleteConfirm(false)
+    }
+  }
+
   const galleryNameForUrl = galleryName.replaceAll(' ', '-')
 
   return (
@@ -197,14 +220,25 @@ export default function GalleryDetail() {
 
           {!loading && !error && gallery && (
             <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl overflow-hidden">
-              <div className="flex items-center gap-2 mb-4">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-                  {gallery.name}
-                </h1>
-                {!gallery.finished && (
-                  <span className="text-sm text-orange-500 dark:text-orange-400 font-medium">
-                    (in development)
-                  </span>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                    {gallery.name}
+                  </h1>
+                  {!gallery.finished && (
+                    <span className="text-sm text-orange-500 dark:text-orange-400 font-medium">
+                      (in development)
+                    </span>
+                  )}
+                </div>
+                {user && gallery.id_user === user.id && (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-2"
+                  >
+                    <CiTrash size={20} />
+                    Delete Gallery
+                  </button>
                 )}
               </div>
 
@@ -370,6 +404,33 @@ export default function GalleryDetail() {
         </div>
       </main>
       <Footer />
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setShowDeleteConfirm(false)}>
+          <div className="bg-white dark:bg-[#24252a] rounded-lg p-6 max-w-md w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Delete Gallery</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              Are you sure you want to delete "{gallery.name}"? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deletingGallery}
+                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteGallery}
+                disabled={deletingGallery}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deletingGallery ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
