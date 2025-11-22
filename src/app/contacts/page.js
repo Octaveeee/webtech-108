@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { Mail, Phone} from 'lucide-react'
@@ -5,6 +8,46 @@ import { FaLinkedinIn, FaGithub} from 'react-icons/fa'
 import { FaMapLocation } from "react-icons/fa6"
 
 export default function Contacts() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(null)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    setSuccess(false)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi')
+      }
+
+      setSuccess(true)
+      setFormData({ name: '', email: '', message: '' })
+      
+      setTimeout(() => setSuccess(false), 5000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
       <Navbar />
@@ -22,26 +65,60 @@ export default function Contacts() {
 
             {/* form*/}
             <div className="bg-white dark:bg-[#24252a] text-black dark:text-white rounded-2xl p-8 shadow-xl">
-              <form className="flex flex-col space-y-4">
+              <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
-                  <input type="text" className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black" placeholder="Your name" />
+                  <input 
+                    type="text" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="w-full rounded-lg px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" 
+                    placeholder="Your name" 
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
-                  <input type="email" className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black" placeholder="Your email" />
+                  <input 
+                    type="email" 
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="w-full rounded-lg px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" 
+                    placeholder="Your email" 
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Message</label>
-                  <textarea className="w-full rounded-lg px-3 py-2 border border-gray-300 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-black" placeholder="Write your message...">
-
-                  </textarea>
+                  <textarea 
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
+                    className="w-full rounded-lg px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white h-32 resize-none focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white" 
+                    placeholder="Write your message..."
+                  />
                 </div>
 
-                <button type="submit" className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition">
-                  Send message
+                {error && (
+                  <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg text-sm">
+                    Message envoyé avec succès !
+                  </div>
+                )}
+
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Envoi en cours...' : 'Send message'}
                 </button>
 
               </form>
