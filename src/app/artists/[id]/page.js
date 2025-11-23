@@ -5,14 +5,13 @@ import Image from 'next/image'
 
 export default async function ArtistDetail({ params }) {
   const nameParam = params.id
+  // replace - with space
   const artistName = decodeURIComponent(nameParam).replaceAll('-', ' ')
 
-  const { data: artist, error } = await supabaseServer
-    .from('artists')
-    .select('*')
-    .eq('name', artistName)
-    .single()
+  // search the artist
+  const { data: artist, error } = await supabaseServer.from('artists').select('*').eq('name', artistName).single()
 
+  // error or no artist
   if (error || !artist) {
     notFound()
   }
@@ -25,15 +24,10 @@ export default async function ArtistDetail({ params }) {
         </Link>
 
         <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl overflow-hidden">
+          {/* if image : show it */}
           {artist.img_url && (
             <div className="mb-6 relative w-full h-96 rounded-lg overflow-hidden">
-              <Image
-                src={artist.img_url}
-                alt={artist.name}
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              <Image src={artist.img_url} alt={artist.name} fill className="object-cover" unoptimized/>
             </div>
           )}
 
@@ -41,6 +35,7 @@ export default async function ArtistDetail({ params }) {
             {artist.name}
           </h1>
 
+          {/* if bio : show it */}
           {artist.bio && (
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Biography</h2>
@@ -50,7 +45,9 @@ export default async function ArtistDetail({ params }) {
             </div>
           )}
 
+          {/* artist info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* if country : show it */}
             {artist.country && (
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Country</p>
@@ -58,15 +55,12 @@ export default async function ArtistDetail({ params }) {
               </div>
             )}
 
+            {/* if birth date : show it */}
             {artist.birth_date && (
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Birthday</p>
                 <p className="text-gray-900 dark:text-white">
-                  {new Date(artist.birth_date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  {new Date(artist.birth_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'})}
                 </p>
               </div>
             )}

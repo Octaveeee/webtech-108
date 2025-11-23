@@ -7,6 +7,7 @@ import GalleryScene from '@/components/scenes3d/GalleryScene'
 import HelpPanel from '@/components/scenes3d/HelpPanel'
 import { supabase } from '@/lib/supabaseClient'
 
+// preload textures
 function TexturePreloader() {
   useEffect(() => {
     const textures = [
@@ -35,6 +36,7 @@ function TexturePreloader() {
   return null
 }
 
+// loading animation
 function SceneLoader() {
   return (
     <div className="w-screen h-screen bg-[#1a1b1f] flex items-center justify-center">
@@ -57,18 +59,16 @@ export default function GalleryScenePage() {
   const [error, setError] = useState(null)
   const [configLoading, setConfigLoading] = useState(true)
 
+  // get scene config from database
   useEffect(() => {
     async function fetchSceneConfig() {
       try {
         setConfigLoading(true)
-        const { data, error } = await supabase
-          .from('galleries')
-          .select('scene_config')
-          .eq('name', galleryName)
-          .single()
+        const { data, error } = await supabase.from('galleries').select('scene_config').eq('name', galleryName).single()
 
         if (error) throw error
         
+        // error
         if (!data?.scene_config) {
           throw new Error('No scene configuration found for this gallery')
         }

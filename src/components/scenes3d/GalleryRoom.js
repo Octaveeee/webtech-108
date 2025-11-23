@@ -12,6 +12,7 @@ import { useTexture, useGLTF } from '@react-three/drei'
 import { RepeatWrapping } from 'three'
 import * as THREE from 'three'
 
+// create texture with repeat pattern
 const createTexture = (baseTexture, repeatX, repeatY) => {
   const texture = baseTexture.clone()
   texture.repeat.set(repeatX, repeatY)
@@ -30,9 +31,11 @@ const Frame3D = ({ modelPath, width, height, frameThickness, frameScale }) => {
   
   const clonedScene = frameModel.scene.clone()
   
+  // calculate model size
   const box = new THREE.Box3().setFromObject(clonedScene)
   const modelSize = box.getSize(new THREE.Vector3())
   
+  // calculate scale to fit painting size
   const targetWidth = width + frameThickness * 2
   const targetHeight = height + frameThickness * 2
   
@@ -50,6 +53,7 @@ const Frame3D = ({ modelPath, width, height, frameThickness, frameScale }) => {
   )
 }
 
+// painting component with frame
 const Painting = ({ painting }) => {
   const texture = useTexture(painting.img_url)
   const [width, height] = painting.size || [2, 2]
@@ -57,7 +61,6 @@ const Painting = ({ painting }) => {
   const frameThickness = painting.frameThickness || 0.1
   const frameScale = painting.frameScale || 1
   
-
   const frameModelPath = '/textures/picture_frame.glb'
   
   return (
@@ -80,16 +83,20 @@ const Painting = ({ painting }) => {
   )
 }
 
+// main room component
 const GalleryRoom = ({ sceneConfig }) => {
   
+  // load base textures
   const baseFloorTexture = useTexture('/textures/floor.jpg')
   const baseWallTexture = useTexture('/textures/wall.jpg')
   const baseRoofTexture = useTexture('/textures/roof.jpg')
   const basePlinthTexture = useTexture('/textures/plinth.jpg')
 
+  // create textures with repeat
   const wallTexture = createTexture(baseWallTexture, 2, 2)
   const plinthTexture = createTexture(basePlinthTexture, 1, 1)
 
+  // get scene elements from config
   const floors = sceneConfig.floors
   const roofs = sceneConfig.roofs
   const walls = sceneConfig.walls

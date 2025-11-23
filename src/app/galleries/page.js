@@ -3,14 +3,9 @@ import GalleriesList from '@/components/GalleriesList'
 import Link from 'next/link'
 
 export default async function Galleries() {
-  const { data: galleries, error } = await supabaseServer
-    .from('galleries')
-    .select(`
-      *,
-      profiles!galleries_id_user_fkey(name)
-    `)
-    .order('name', { ascending: true })
+  const { data: galleries, error } = await supabaseServer.from('galleries').select(`*,profiles!galleries_id_user_fkey(name)`).order('name', { ascending: true })
 
+  // errors
   if (error) {
     return (
       <div className="pt-24 pb-16">
@@ -26,6 +21,7 @@ export default async function Galleries() {
     )
   }
 
+  // to be sure we have something
   const galleriesData = galleries || []
 
   return (
@@ -35,6 +31,7 @@ export default async function Galleries() {
           Our Galleries
         </h1>
         
+        {/* if no galleries : show create button */}
         {galleriesData.length === 0 ? (
           <div className="text-center mt-12">
             <Link
@@ -44,6 +41,7 @@ export default async function Galleries() {
             </Link>
           </div>
         ) : (
+          /* if galleries : show them */
           <GalleriesList galleries={galleriesData} />
         )}
       </div>

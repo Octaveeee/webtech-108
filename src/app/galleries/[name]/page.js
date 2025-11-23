@@ -11,12 +11,14 @@ export default function GalleryDetail() {
   const router = useRouter()
   const nameParam = params.name
   const galleryName = decodeURIComponent(nameParam).replaceAll('-', ' ')
+  // gallery and user state
   const [gallery, setGallery] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [userLoading, setUserLoading] = useState(true)
+  // comments state
   const [comments, setComments] = useState([])
   const [commentsLoading, setCommentsLoading] = useState(true)
   const [commentContent, setCommentContent] = useState('')
@@ -31,14 +33,7 @@ export default function GalleryDetail() {
     async function fetchGallery() {
       try {
         setLoading(true)
-        const { data, error } = await supabase
-          .from('galleries')
-          .select(`
-            *,
-            profiles!galleries_id_user_fkey(name)
-          `)
-          .eq('name', galleryName)
-          .single()
+        const { data, error } = await supabase.from('galleries').select(`*,profiles!galleries_id_user_fkey(name)`).eq('name', galleryName).single()
 
         if (error) throw error
         setGallery(data)
@@ -54,16 +49,14 @@ export default function GalleryDetail() {
     }
   }, [galleryName])
 
+  // get current user
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
       if (user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('name')
-          .eq('user_id', user.id)
-          .single()
+        // get user profile
+        const { data } = await supabase.from('profiles').select('name').eq('user_id', user.id).single()
         setProfile(data)
       }
       setUserLoading(false)
@@ -71,11 +64,11 @@ export default function GalleryDetail() {
 
     getUser()
 
+    // auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        supabase.from('profiles').select('name').eq('user_id', session.user.id).single()
-          .then(({ data }) => setProfile(data))
+        supabase.from('profiles').select('name').eq('user_id', session.user.id).single().then(({ data }) => setProfile(data))
       } else {
         setProfile(null)
       }
@@ -84,27 +77,19 @@ export default function GalleryDetail() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // get comments
   const fetchCommentsWithProfiles = async (galleryId) => {
-    const { data: commentsData, error: commentsError } = await supabase
-      .from('comments')
-      .select('*')
-      .eq('gallery_id', galleryId)
-      .order('created_at', { ascending: false })
+    const { data: commentsData, error: commentsError } = await supabase.from('comments').select('*').eq('gallery_id', galleryId).order('created_at', { ascending: false })
 
     if (commentsError) throw commentsError
     if (!commentsData?.length) return []
 
     const userIds = [...new Set(commentsData.map(c => c.user_id))]
-    const { data: profilesData, error: profilesError } = await supabase
-      .from('profiles')
-      .select('user_id, name')
-      .in('user_id', userIds)
+    const { data: profilesData, error: profilesError } = await supabase.from('profiles').select('user_id, name').in('user_id', userIds)
 
     if (profilesError) throw profilesError
 
-    return commentsData.map(comment => ({
-      ...comment,
-      profiles: profilesData?.find(p => p.user_id === comment.user_id) || null
+    return commentsData.map(comment => ({...comment,profiles: profilesData?.find(p => p.user_id === comment.user_id) || null
     }))
   }
 
@@ -126,6 +111,7 @@ export default function GalleryDetail() {
     fetchComments()
   }, [gallery])
 
+  // new comment
   const handleSubmitComment = async (e) => {
     e.preventDefault()
     if (!user || !gallery || !commentContent.trim()) return
@@ -134,11 +120,8 @@ export default function GalleryDetail() {
     setCommentError(null)
 
     try {
-      const { error } = await supabase.from('comments').insert({
-        user_id: user.id,
-        gallery_id: gallery.id_galleries,
-        content: commentContent.trim()
-      })
+      // insert comment
+      const { error } = await supabase.from('comments').insert({user_id: user.id, gallery_id: gallery.id_galleries, content: commentContent.trim()}).select()
 
       if (error) throw error
 
@@ -152,19 +135,17 @@ export default function GalleryDetail() {
     }
   }
 
+  // delete comment
   const handleDeleteComment = async (commentId) => {
     if (!user || !gallery) return
 
     setDeletingCommentId(commentId)
     try {
-      const { error } = await supabase
-        .from('comments')
-        .delete()
-        .eq('id', commentId)
-        .eq('user_id', user.id)
+      const { error } = await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id)
 
       if (error) throw error
 
+      // refresh comments
       const comments = await fetchCommentsWithProfiles(gallery.id_galleries)
       setComments(comments)
     } catch {
@@ -174,19 +155,17 @@ export default function GalleryDetail() {
     }
   }
 
+  // delete gallery
   const handleDeleteGallery = async () => {
     if (!user || !gallery || !user.id || gallery.id_user !== user.id) return
 
     setDeletingGallery(true)
     try {
-      const { error } = await supabase
-        .from('galleries')
-        .delete()
-        .eq('id_galleries', gallery.id_galleries)
-        .eq('id_user', user.id)
+      const { error } = await supabase.from('galleries').delete().eq('id_galleries', gallery.id_galleries).eq('id_user', user.id).select()
 
       if (error) throw error
 
+      // redirect to galleries list
       router.push('/galleries')
     } catch {
       setDeletingGallery(false)
@@ -194,19 +173,17 @@ export default function GalleryDetail() {
     }
   }
 
+  // finished status
   const handleToggleFinished = async () => {
     if (!user || !gallery || !user.id || gallery.id_user !== user.id) return
 
     setUpdatingFinished(true)
     try {
-      const { error } = await supabase
-        .from('galleries')
-        .update({ finished: !gallery.finished })
-        .eq('id_galleries', gallery.id_galleries)
-        .eq('id_user', user.id)
+      const { error } = await supabase.from('galleries').update({ finished: !gallery.finished }).eq('id_galleries', gallery.id_galleries).eq('id_user', user.id).select()
 
       if (error) throw error
 
+      // update state
       setGallery({ ...gallery, finished: !gallery.finished })
     } catch (err) {
       console.error('Error updating gallery:', err)

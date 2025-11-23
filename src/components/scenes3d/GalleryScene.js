@@ -26,6 +26,7 @@ function LoadingDetector({ onLoaded }) {
   return null
 }
 
+// main 3D scene component
 const GalleryScene = ({ onLoaded, sceneConfig }) => {
   return (
     <Canvas shadows>

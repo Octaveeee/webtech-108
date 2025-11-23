@@ -8,7 +8,7 @@ function AuthForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
-  // form state
+  // form inputs
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -19,7 +19,7 @@ function AuthForm() {
   const [success, setSuccess] = useState(null)
 
 
-  // verify if login or register (from the navbar)
+  // verify if login or register (from the url)
   useEffect(() => {
     const mode = searchParams.get('mode')
     if (mode === 'register') {
@@ -37,6 +37,7 @@ function AuthForm() {
 
     try {
       if (isSignUp) {
+        // register
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -53,24 +54,25 @@ function AuthForm() {
         
         // create profile 
         if (data.user) {
-          const profileData = {
-            user_id: data.user.id,
-            name: name,
-          }
+          const profileData = { user_id: data.user.id, name: name,}
           
+          // if birth date is correct : add it
           if (birthDate && birthDate.trim() !== '') {
             profileData.birth_date = birthDate
           }
           
+          // insetr
           const { error: profileError } = await supabase
             .from('profiles')
             .insert(profileData)
           
+          //error
           if (profileError) {
             throw new Error(`Failed to create profile: ${profileError.message}`)
           }
         }
         
+        // success and clear form
         setSuccess("Account created successfully!")
         setName('')
         setEmail('')
@@ -93,6 +95,7 @@ function AuthForm() {
         if (error) throw error
         
         setSuccess("Login successful!")
+        // redirect to home page
         setTimeout(() => {
           router.push('/')
           router.refresh()
@@ -152,6 +155,7 @@ function AuthForm() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* if register : show name and birth date */}
                 {isSignUp && (
                   <>
 
@@ -160,11 +164,7 @@ function AuthForm() {
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Name
                       </label>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
+                      <input type="text" value={name} onChange={(e) => setName(e.target.value)} required
                         className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Your Name"
                       />
@@ -175,10 +175,7 @@ function AuthForm() {
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Birth Date
                       </label>
-                      <input
-                        type="date"
-                        value={birthDate}
-                        onChange={(e) => setBirthDate(e.target.value)}
+                      <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)}
                         className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
@@ -190,11 +187,7 @@ function AuthForm() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Email
                   </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="your@email.com"
                   />
@@ -205,20 +198,14 @@ function AuthForm() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="••••••••"
                   />
                 </div>
 
                 {/* boutton*/}
-                <button
-                  type="submit"
-                  disabled={loading}
+                <button type="submit" disabled={loading}
                   className="w-full bg-[#1a1b1f] dark:bg-[#24252a] text-white py-3 rounded-lg font-semibold hover:bg-[#24252a] dark:hover:bg-[#2a2b30] transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In')}
@@ -227,10 +214,7 @@ function AuthForm() {
 
               {/* switch mode */}
               <div className="mt-4 text-center">
-                <button
-                  onClick={toggleAuthMode}
-                  className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
-                >
+                <button onClick={toggleAuthMode} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
                   {isSignUp ? 'Already have an account? Sign In' : 'Don\'t have an account? Sign Up'}
                 </button>
               </div>

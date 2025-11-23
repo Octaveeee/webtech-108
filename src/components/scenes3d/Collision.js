@@ -37,12 +37,9 @@ export function createCollisionBoxes(sceneConfig) {
         return boxes
     }
     
+    // create a collision box for each wall
     sceneConfig.walls.forEach(wall => {
-        boxes.push(new CollisionBox(
-            wall.position,
-            [10, 7, 0.1],
-            wall.rotation
-        ))
+        boxes.push(new CollisionBox(wall.position, [10, 7, 0.1], wall.rotation))
     })
     
     return boxes
@@ -52,6 +49,7 @@ export function createCollisionBoxes(sceneConfig) {
 export function checkCollision(position, collisionBoxes, playerRadius = 0.25) {
     const playerPos = new THREE.Vector3(...position)
     
+    // check each collision box
     for (const box of collisionBoxes) {
         const testPoints = [
             playerPos,

@@ -9,6 +9,7 @@ import * as THREE from 'three'
 const MovementControls = ({ playerRef, sceneConfig }) => {
   const controlsRef = useRef()
   const { camera } = useThree()
+  // create collision
   const collisionBoxes = useRef(createCollisionBoxes(sceneConfig))
   
   useEffect(() => {
@@ -17,18 +18,21 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
     }
   }, [sceneConfig])
   
+  // keyboard state
   const keys = useRef({ forward: false, backward: false, left: false, right: false, jump: false })
   const verticalVelocity = useRef(0)
   const groundY = 1
   const GRAVITY = 20
   const JUMP_SPEED = 7
 
+  // keyboard event listeners
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.code === 'KeyW') keys.current.forward = true
       if (e.code === 'KeyS') keys.current.backward = true
       if (e.code === 'KeyA') keys.current.left = true
       if (e.code === 'KeyD') keys.current.right = true
+      // jump only if on ground
       if (e.code === 'Space') {
         if (playerRef.current && Math.abs(playerRef.current.position.y - groundY) < 1e-3) {
           verticalVelocity.current = JUMP_SPEED
@@ -54,6 +58,7 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
     }
   }, [playerRef])
 
+  // update player position every frame
   useFrame((state, delta) => {
     if (!playerRef.current) return
 
@@ -66,6 +71,7 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
     const right = new THREE.Vector3()
     right.crossVectors(direction, new THREE.Vector3(0, 1, 0)).normalize()
 
+    // calculate movement based on keys
     const movement = new THREE.Vector3()
     if (keys.current.forward) movement.add(direction)
     if (keys.current.backward) movement.sub(direction)
@@ -88,7 +94,7 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
       }
     }
 
-    
+    // apply gravity
     verticalVelocity.current -= GRAVITY * delta
     playerRef.current.position.y += verticalVelocity.current * delta
     
@@ -97,6 +103,7 @@ const MovementControls = ({ playerRef, sceneConfig }) => {
       verticalVelocity.current = 0
     }
 
+    // update camera position to follow player
     camera.position.copy(playerRef.current.position).add(new THREE.Vector3(0, 1.5, 0))
   })
 

@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react'
 export default function GallerySearch({ galleries, onFilteredChange }) {
   const [searchQuery, setSearchQuery] = useState('')
 
+  // when search changes
   useEffect(() => {
     if (searchQuery.trim() === '') {
+      // if empty : show all galleries
       onFilteredChange(galleries)
     } else {
       const filtered = galleries.filter(gallery =>

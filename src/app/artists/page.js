@@ -1,12 +1,12 @@
 import { supabaseServer } from '@/lib/supabaseClient'
 import { ArtistCard } from '@/components/artists'
 
-export default async function Artists() {
-  const { data: artists, error } = await supabaseServer
-    .from('artists')
-    .select('*')
-    .order('name', { ascending: true })
 
+export default async function Artists() {
+  // get all artists from database
+  const { data: artists, error } = await supabaseServer.from('artists').select('*').order('name', { ascending: true })
+
+  // errors
   if (error) {
     return (
       <div className="pt-24 pb-16">
@@ -22,6 +22,7 @@ export default async function Artists() {
     )
   }
 
+  // to be sure we have something
   const artistsData = artists || []
 
   return (
@@ -34,12 +35,14 @@ export default async function Artists() {
           Discover the talents that shape our collection.
         </p>
         
+        {/* if no artists */}
         {artistsData.length === 0 && (
           <div className="text-center py-20">
             <p className="text-gray-300 text-xl">No artists found.</p>
           </div>
         )}
         
+        {/* if artists : display them in a grid */}
         {artistsData.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {artistsData.map((artist) => (

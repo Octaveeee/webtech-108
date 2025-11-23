@@ -18,11 +18,12 @@ export const metadata = {
   description: "Art Gallery - Discover curated collections and immersive 3D exhibitions",
 };
 
+// main layout for all pages
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        
+        {/* preload textures */}
         <link rel="preload" as="image" href="/textures/floor.jpg" />
         <link rel="preload" as="image" href="/textures/wall.jpg" />
         <link rel="preload" as="image" href="/textures/roof.jpg" />

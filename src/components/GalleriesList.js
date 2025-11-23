@@ -10,16 +10,20 @@ export default function GalleriesList({ galleries: initialGalleries }) {
 
   return (
     <>
+      {/* search bar */}
       <GallerySearch galleries={initialGalleries} onFilteredChange={setFilteredGalleries} />
       
+      {/* if no galleries found */}
       {filteredGalleries.length === 0 && (
         <div className="text-center py-20">
           <p className="text-gray-300 text-xl">No galleries found.</p>
         </div>
       )}
       
+      {/* if galleries found : show them*/}
       {filteredGalleries.length > 0 && (
         <>
+          {/* gallery cards grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredGalleries.map((gallery) => (
               <GalleryCard key={gallery.id_galleries} gallery={gallery} />
@@ -31,11 +35,9 @@ export default function GalleriesList({ galleries: initialGalleries }) {
             <div className="flex-1 h-px bg-gray-600"></div>
           </div>
 
-          {/* Create Gallery button */}
+          {/* create gallery button */}
           <div className="mt-12 text-center">
-            <Link
-              href="/galleries/create"
-              className="inline-block px-8 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold">
+            <Link href="/galleries/create" className="inline-block px-8 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold">
               Create Gallery
             </Link>
           </div>

@@ -30,16 +30,16 @@ export default function Navbar() {
             setLoading(false);
         }
         getUser();
-
-
     }, []);
 
+    // logout user
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setUser(null);
         setProfile(null);
     };
 
+    // check if user can edit name (every 5 days)
     const canEditName = () => {
         if (!profile?.updated_at) return true;
         const lastUpdate = new Date(profile.updated_at);
@@ -61,6 +61,7 @@ export default function Navbar() {
         setNameError(null);
     };
 
+    // update name in database
     const handleUpdateName = async () => {
         if (!newName.trim() || newName.trim() === profile.name) {
             setEditingName(false);
@@ -76,16 +77,11 @@ export default function Navbar() {
         setNameError(null);
 
         try {
-            const { error } = await supabase
-                .from('profiles')
-                .update({
-                    name: newName.trim(),
-                    updated_at: new Date().toISOString()
-                })
-                .eq('user_id', user.id);
+            const { error } = await supabase.from('profiles').update({name: newName.trim(),updated_at: new Date().toISOString()}).eq('user_id', user.id);
 
             if (error) throw error;
 
+            // refresh profile data
             const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
             setProfile(data);
             setEditingName(false);
@@ -102,7 +98,7 @@ export default function Navbar() {
         <>
             <header className="fixed top-0 left-0 w-full z-50 bg-[#24252a]/95 backdrop-blur border-b border-gray-700">
                 <nav className="container mx-auto grid grid-cols-3 items-center h-20 px-6">
-                    {/* Logo*/}
+                    {/* logo */}
                     <Link href="/" className="flex items-center gap-2">
                         <Image
                         src="/assets/logo2.png"
@@ -114,10 +110,7 @@ export default function Navbar() {
 
                     {/* Bouton menu*/}
                     <div className="flex justify-center">
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="relative w-8 h-6 flex flex-col justify-between items-center group focus:outline-none"
-                        >
+                        <button onClick={() => setIsOpen(!isOpen)} className="relative w-8 h-6 flex flex-col justify-between items-center group focus:outline-none">
                             <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2.5' : ''}`}></span>
                             <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
                             <span className={`block w-full h-0.5 bg-white group-hover:bg-gray-300 transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2.5' : ''}`}></span>
@@ -126,8 +119,9 @@ export default function Navbar() {
 
                     {/* Login */}
                     <div className="flex items-center justify-end gap-3">
+                        {/* if loading : show loading */}
                         {loading ? (<div className="text-gray-400">Loading...</div>) : user && profile ? (
-
+                            // if logged in : show profile button and logout
                             <div className="flex items-center gap-5">
                                 <button 
                                     onClick={async () => {
@@ -148,6 +142,7 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
+                            // if not logged in : show login and register buttons
                             <>
                                 <Link href="/auth?mode=login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition flex items-center gap-2">
                                     <CiLogin size={24} />
@@ -195,6 +190,7 @@ export default function Navbar() {
                 </ul>
             </div>
 
+            {/* profile*/}
             {showProfile && profile && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => {
                     setShowProfile(false);
@@ -210,18 +206,18 @@ export default function Navbar() {
                             </button>
                         </div>
                         <div className="space-y-4">
+                            {/* name + edit option */}
                             <div>
                                 <div className="flex items-center justify-between mb-1">
                                     <p className="text-sm text-gray-400">Name</p>
                                     {!editingName && canEditName() && (
-                                        <button
-                                            onClick={handleStartEditName}
-                                            className="text-sm text-blue-400 hover:text-blue-300 transition"
-                                        >
+                                        <button onClick={handleStartEditName} className="text-sm text-blue-400 hover:text-blue-300 transition">
                                             Edit
                                         </button>
                                     )}
                                 </div>
+
+                                {/* if editing name */}
                                 {editingName ? (
                                     <div className="space-y-2">
                                         <input
@@ -274,6 +270,8 @@ export default function Navbar() {
                                     </>
                                 )}
                             </div>
+
+                            {/* if birth date */}
                             {profile.birth_date && (
                                 <div>
                                     <p className="text-sm text-gray-400 mb-1">Birth Date</p>
@@ -286,12 +284,16 @@ export default function Navbar() {
                                     </p>
                                 </div>
                             )}
+                            
+                            {/* email */}
                             {user?.email && (
                                 <div>
                                     <p className="text-sm text-gray-400 mb-1">Email</p>
                                     <p className="text-white text-lg">{user.email}</p>
                                 </div>
                             )}
+
+                            {/* created_at */}
                             {profile.created_at && (
                                 <div>
                                     <p className="text-sm text-gray-400 mb-1">Member since</p>
