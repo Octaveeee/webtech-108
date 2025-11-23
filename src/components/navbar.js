@@ -188,11 +188,6 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/about" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
-                        About
-                        </Link>
-                    </li>
-                    <li>
                         <Link href="/contacts" onClick={() => setIsOpen(false)} className="hover:text-gray-400 transition">
                         Contact
                         </Link>

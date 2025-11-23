@@ -54,13 +54,7 @@ export default function Home() {
               This project was developed as part of the Web Technologies course at ECE Paris. 
               It showcases modern web development practices and immersive 3D experiences.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/about"
-                className="inline-block px-6 py-2 text-blue-400 hover:text-blue-300 border border-blue-600 rounded-lg transition"
-              >
-                Learn More
-              </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">            
               <Link 
                 href="/contacts"
                 className="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
