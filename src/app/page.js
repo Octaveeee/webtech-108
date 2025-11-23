@@ -1,12 +1,8 @@
 import Link from 'next/link'
-import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
-      <main className="pt-5 flex-1">
+    <div className="pt-5">
         <section className="container mx-auto px-6 pt-20 pb-8 md:pt-32 md:pb-12">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
@@ -64,8 +60,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
     </div>
   )
 }

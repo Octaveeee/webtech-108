@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 import { CiTrash } from 'react-icons/ci'
 
@@ -220,9 +218,7 @@ export default function GalleryDetail() {
   const galleryNameForUrl = galleryName.replaceAll(' ', '-')
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
-      <main className="flex-1 pt-24 pb-16">
+    <div className="pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">
           <Link href="/galleries" className="text-gray-400 hover:text-white mb-6 inline-block">
             ← Back to Galleries
@@ -443,8 +439,6 @@ export default function GalleryDetail() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
 
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" onClick={() => setShowDeleteConfirm(false)}>

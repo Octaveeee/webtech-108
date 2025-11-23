@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function CreateGallery() {
@@ -146,46 +144,36 @@ export default function CreateGallery() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-        <Navbar />
-        <main className="flex-1 pt-24 pb-16">
-          <div className="max-w-2xl mx-auto px-6">
-            <div className="text-center py-20">
-              <p className="text-gray-300 text-xl">Loading...</p>
-            </div>
+      <div className="pt-24 pb-16">
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="text-center py-20">
+            <p className="text-gray-300 text-xl">Loading...</p>
           </div>
-        </main>
-        <Footer />
+        </div>
       </div>
     )
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-        <Navbar />
-        <main className="flex-1 pt-24 pb-16">
-          <div className="max-w-2xl mx-auto px-6">
-            <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl text-center">
-              <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Login Required</h1>
-              <p className="text-gray-600 dark:text-gray-300 mb-6">
-                You must be logged in to create a gallery.
-              </p>
-              <Link href="/auth?mode=login" className="inline-block px-6 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold">
-                Go to Login
-              </Link>
-            </div>
+      <div className="pt-24 pb-16">
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="bg-white dark:bg-[#24252a] rounded-2xl p-8 shadow-xl text-center">
+            <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Login Required</h1>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              You must be logged in to create a gallery.
+            </p>
+            <Link href="/auth?mode=login" className="inline-block px-6 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition font-semibold">
+              Go to Login
+            </Link>
           </div>
-        </main>
-        <Footer />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
-      <main className="flex-1 pt-24 pb-16">
+    <div className="pt-24 pb-16">
         <div className="max-w-2xl mx-auto px-6">
           <Link href="/galleries" className="text-gray-400 hover:text-white mb-6 inline-block">
             ← Back to Galleries
@@ -297,8 +285,6 @@ export default function CreateGallery() {
             </form>
           </div>
         </div>
-      </main>
-      <Footer />
     </div>
   )
 }

@@ -35,12 +35,3 @@ export const ArtistCard = ({ artist }) => {
     </Link>
   )
 }
-
-export const ArtistSkeleton = () => (
-  <div className="bg-white dark:bg-[#24252a] rounded-xl shadow-lg animate-pulse h-96">
-    <div className="w-full h-56 bg-gray-300 dark:bg-gray-700"></div>
-    <div className="p-6">
-      <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
-    </div>
-  </div>
-)

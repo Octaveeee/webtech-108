@@ -9,4 +9,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
+// For client components
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// For server components
+export const supabaseServer = createClient(supabaseUrl, supabaseAnonKey)

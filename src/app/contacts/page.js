@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
 import { Mail, Phone} from 'lucide-react'
 import { FaLinkedinIn, FaGithub} from 'react-icons/fa'
 import { FaMapLocation } from "react-icons/fa6"
@@ -49,9 +47,7 @@ export default function Contacts() {
     }
   }
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
-      <main className="container mx-auto py-4 pt-20 flex-1">
+    <div className="container mx-auto py-4 pt-20 flex-1">
         <div className="flex flex-1 items-center justify-center px-6 py-8">
           <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-40">
 
@@ -241,8 +237,6 @@ export default function Contacts() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
     </div>
   )
 }

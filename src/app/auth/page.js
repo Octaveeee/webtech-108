@@ -2,8 +2,6 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Navbar from '@/components/navbar'
-import Footer from '@/components/footer'
 import { supabase } from '@/lib/supabaseClient'
 
 function AuthForm() {
@@ -133,8 +131,7 @@ function AuthForm() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <main className="flex-1 pt-24 pb-16">
+    <div className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           <div className="max-w-md mx-auto">
             <div className="bg-white dark:bg-[#24252a] rounded-xl p-8 shadow-lg">
@@ -240,16 +237,13 @@ function AuthForm() {
             </div>
           </div>
         </div>
-      </main>
     </div>
   )
 }
 
 export default function AuthPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#1a1b1f] text-white">
-      <Navbar />
-      <main className="flex-1 pt-24 pb-16">
+    <div className="pt-24 pb-16">
         <Suspense fallback={
           <div className="container mx-auto px-6">
             <div className="max-w-md mx-auto">
@@ -261,8 +255,6 @@ export default function AuthPage() {
         }>
           <AuthForm />
         </Suspense>
-      </main>
-      <Footer />
     </div>
   )
 }

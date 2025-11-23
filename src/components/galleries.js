@@ -33,13 +33,3 @@ export const GalleryCard = ({ gallery }) => {
   )
 }
 
-export const GallerySkeleton = () => (
-  <div className="bg-white dark:bg-[#24252a] rounded-xl shadow-lg animate-pulse h-48">
-    <div className="p-6">
-      <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-4"></div>
-      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-2/3"></div>
-    </div>
-  </div>
-)
-
