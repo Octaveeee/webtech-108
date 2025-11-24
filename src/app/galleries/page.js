@@ -2,6 +2,9 @@ import { supabaseServer } from '@/lib/supabaseClient'
 import GalleriesList from '@/components/GalleriesList'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function Galleries() {
   const { data: galleries, error } = await supabaseServer.from('galleries').select(`*,profiles!galleries_id_user_fkey(name)`).order('name', { ascending: true })
 

@@ -134,6 +134,8 @@ export default function CreateGallery() {
 
       if (insertError) throw insertError
 
+      router.refresh()
+
       // redirect to gallery page
       router.push(`/galleries/${encodeURIComponent(formData.name.trim().replaceAll(' ', '-'))}`)
     } catch (err) {
