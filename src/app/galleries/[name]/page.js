@@ -179,12 +179,15 @@ export default function GalleryDetail() {
 
     setUpdatingFinished(true)
     try {
-      const { error } = await supabase.from('galleries').update({ finished: !gallery.finished }).eq('id_galleries', gallery.id_galleries).eq('id_user', user.id).select()
+      const { data, error } = await supabase.from('galleries').update({ finished: !gallery.finished }).eq('id_galleries', gallery.id_galleries).eq('id_user', user.id).select(`*,profiles!galleries_id_user_fkey(name)`).single()
 
       if (error) throw error
 
-      // update state
-      setGallery({ ...gallery, finished: !gallery.finished })
+      if (data) {
+        setGallery(data)
+      }
+      
+      router.refresh()
     } catch (err) {
       console.error('Error updating gallery:', err)
     } finally {
